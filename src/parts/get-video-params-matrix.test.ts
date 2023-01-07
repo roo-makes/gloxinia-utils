@@ -4,7 +4,7 @@ test("returns something", () => {
   const result = getVideoParamsMatrix({
     crfs: [10, 20],
     bitrates: [2000, 3000],
-    dimensions: [
+    sizes: [
       {
         width: 720,
         height: 1280,

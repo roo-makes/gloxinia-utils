@@ -1,37 +1,34 @@
-interface Dimension {
-  width: number;
-  height: number;
-}
+import { Size } from "../types/common";
 
 interface GetVideoParamsMatrixOptions {
   crfs: number[];
   bitrates: number[];
   fpses?: number[];
-  dimensions?: Dimension[];
+  sizes?: Size[];
 }
 
 const getVideoParamsMatrix = (options: {
   crfs: number[];
   bitrates: number[];
   fpses?: number[];
-  dimensions?: Dimension[];
+  sizes?: Size[];
 }) => {
   const {
     crfs,
     bitrates,
     fpses = [30],
-    dimensions = [{ width: 720, height: 1280 }],
+    sizes = [{ width: 720, height: 1280 }],
   } = options;
 
   return crfs.flatMap((crf) => {
     return bitrates.flatMap((bitrate) => {
       return fpses.flatMap((fps) => {
-        return dimensions.flatMap((dimension) => {
+        return sizes.flatMap((size) => {
           return {
             crf,
             bitrate,
             fps,
-            dimension,
+            size,
           };
         });
       });

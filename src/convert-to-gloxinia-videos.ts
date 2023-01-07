@@ -39,14 +39,14 @@ const questions: PromptObject[] = [
     validate: validateIntArray,
     format: getIntArrayFromStringList,
   },
-  // {
-  //   type: "text",
-  //   name: "bitrate",
-  //   message: "bitrate value?",
-  //   initial: "50000",
-  //   validate: validateIntArray,
-  //   format: getIntArrayFromStringList,
-  // },
+  {
+    type: "text",
+    name: "fps",
+    message: "fps?",
+    initial: "60",
+    validate: validateIntArray,
+    format: getIntArrayFromStringList,
+  },
 ];
 
 (async () => {
@@ -62,6 +62,7 @@ const questions: PromptObject[] = [
     inputFiles: inputFiles,
     outputPath: options.output,
     crfs: response.crf,
+    fpses: response.fps,
     bitrates: [50000],
   });
 })();

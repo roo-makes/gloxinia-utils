@@ -1,10 +1,8 @@
 import { ffprobe, FfprobeData } from "fluent-ffmpeg";
+import { Size } from "../types/common";
 
 interface VideoInfo {
-  dimensions: {
-    width: number;
-    height: number;
-  };
+  size: Size;
   fps: number;
   duration: number;
 }
@@ -54,7 +52,7 @@ const getSourceVideoInfo = (inputPath: string): Promise<VideoInfo> => {
       const duration = parseInt(stream.nb_frames);
 
       resolve({
-        dimensions: {
+        size: {
           width: stream.width,
           height: stream.height,
         },
