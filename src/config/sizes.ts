@@ -3,7 +3,7 @@ interface SizesConfig {
 }
 
 const sizesConfig: SizesConfig = {
-  "3:4": [240, 360, 480, 720, 960],
+  "3:4": [240, 360, 480, 600, 720, 960],
 
   "1:1": [1080, 960, 720],
 

@@ -6,18 +6,12 @@
 
 var curFrame = timeToFrames(time);
 var framesPerBeat = 30;
-var factor = 1.3;
-
-function customEase(t, start, end, factor) {
-  var range = end - start;
-  return Math.pow(t, factor) * range + start;
-}
 
 var start = Math.floor(curFrame / framesPerBeat) * framesPerBeat;
 var end = start + framesPerBeat;
 var t = (curFrame - start) / framesPerBeat;
 
-var result = customEase(t, start, end, factor);
+var result = easeIn(t, start, end);
 
 framesToTime(result);
 
