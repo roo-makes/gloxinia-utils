@@ -16,10 +16,6 @@ Script to convert multiple videos (specified using a `glob` pattern) to the form
 yarn convert-videos -i ./path/to/videos/* -o ./path/to/output
 ```
 
-### Convert to Gloxinia Images
-
-Same as above, but converts to images.
-
 #### Arguments
 
 `-i`: Using a glob pattern, specify all of the videos you wish to convert. The utility expects these videos to contain an Alpha channel -- best way to generate them is to export from After Effects using the `Apple ProRes 4444` format, ensuring that you select `RGB + Alpha` for `Channels`.
@@ -27,6 +23,18 @@ Same as above, but converts to images.
 `-o`: Folder to output videos to. The `height`, `width`, `fps`, `duration`, and `crf` values will be included in the filename.
 
 All other options will be interactively prompted for once you execute the script.
+
+### Convert to Gloxinia Images
+
+Same as above, but converts to images.
+
+### Convert to Ogg
+
+Script to convert any audio files into `ogg`, which is the preferred format for use in Unity.
+
+```bash
+yarn convert-to-oggs -i ./path/to/audio/*.wav -o ./path/to/output
+```
 
 ## Authors
 
