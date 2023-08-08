@@ -6,12 +6,14 @@ import { Size } from "../types/common";
 interface EncodeImageSequenceOptions {
   input: string;
   output: string;
+  outputPrefix: string;
   size: Size;
 }
 
 const encodeImageSequence = ({
   input,
   output,
+  outputPrefix,
   size,
 }: EncodeImageSequenceOptions) => {
   return new Observable<string>((subscriber) => {
@@ -31,7 +33,7 @@ const encodeImageSequence = ({
         subscriber.next(stdout);
         subscriber.complete();
       })
-      .save(path.resolve(output, "./output-%04d.png"));
+      .save(path.resolve(output, `./${outputPrefix}-f%04d.png`));
   });
 };
 

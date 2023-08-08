@@ -24,19 +24,20 @@ const encodeVideos = async (options: EncodeImageSequencesOptions) => {
 
       const videoTasks = sizes.flatMap((size) => {
         const stats = [size.width + "w", size.height + "h", duration + "d"];
-        const outputFilename = `${inputParts.name}-${stats.join("-")}/`;
-        const output = path.resolve(outputPath, outputFilename);
+        const outputPrefix = `${inputParts.name}-${stats.join("-")}`;
+        const output = path.resolve(outputPath, outputPrefix + "/");
 
         ensureDir(output);
 
         if (existsSync(output)) return [];
 
         const listrTask: ListrTask = {
-          title: `Extracting to ${outputFilename}`,
+          title: `Extracting to ${outputPrefix}`,
           task: () =>
             encodeImageSequence({
               input: path.resolve(inputPath),
               output,
+              outputPrefix,
               size,
             }),
         };
