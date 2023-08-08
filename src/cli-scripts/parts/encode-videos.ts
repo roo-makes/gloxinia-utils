@@ -1,6 +1,7 @@
 import { existsSync } from "fs";
 import { Listr, ListrTask } from "listr2";
 import path from "path";
+import { Size } from "../types/common";
 import encodeVideo from "./encode-video";
 import getSizesForRatio from "./get-sizes-for-ratio";
 import getSourceVideoInfo from "./get-source-video-info";
@@ -12,18 +13,25 @@ interface EncodeVideosOptions {
   bitrates: number[];
   fpses: number[];
   outputPath: string;
+  sizes: Size[];
 }
 
+const adjustDurationForFps = (
+  duration: number,
+  origFps: number,
+  newFps: number
+) => {
+  return Math.round(duration * (newFps / origFps));
+};
+
 const encodeVideos = async (options: EncodeVideosOptions) => {
-  const { inputFiles, outputPath, crfs, fpses, bitrates } = options;
+  const { inputFiles, outputPath, crfs, fpses, sizes, bitrates } = options;
 
   const tasks = await Promise.all(
     inputFiles.map(async (inputPath) => {
       const inputParts = path.parse(inputPath);
       const inputFile = inputParts.base;
-      const { size, fps, duration } = await getSourceVideoInfo(inputPath);
-
-      const sizes = getSizesForRatio(size.width / size.height);
+      const { fps, duration } = await getSourceVideoInfo(inputPath);
 
       const paramsMatrix = getVideoParamsMatrix({
         crfs,
@@ -37,7 +45,7 @@ const encodeVideos = async (options: EncodeVideosOptions) => {
           params.size.width + "w",
           params.size.height + "h",
           params.fps + "fps",
-          duration + "d",
+          adjustDurationForFps(duration, fps, params.fps) + "d",
           params.crf + "crf",
         ];
         const outputFilename = `${inputParts.name}-${stats.join("-")}.webm`;
