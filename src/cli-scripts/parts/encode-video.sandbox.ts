@@ -1,7 +1,7 @@
 import path from "path";
-import encodeVideo from "./encode-video";
+import encodeVideoWebm from "./encode-video-webm";
 
-const observable = encodeVideo({
+const observable = encodeVideoWebm({
   input: path.resolve(
     __dirname,
     "../../gloxinia-nongit/gloxinia-ready/animation.mov"

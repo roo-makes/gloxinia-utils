@@ -1,40 +1,32 @@
 import { Observable } from "rxjs";
 import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
+import { start } from "repl";
 
-interface EncodeVideoOptions {
+interface EncodeVideoOptionsHap {
   input: string;
   output: string;
-  crf: number;
   fps: number;
-  bitrate: number;
   height: Number;
   width: Number;
 }
 
-const encodeVideo = ({
+function encodeVideoHap({
   input,
   output,
   fps,
-  crf,
-  bitrate,
   height,
   width,
-}: EncodeVideoOptions) => {
+}: EncodeVideoOptionsHap): Observable<string> {
   return new Observable<string>((subscriber) => {
     ffmpegCommand(path.resolve(input))
       .noAudio()
-      .videoCodec("libvpx")
+      .videoCodec("hap")
       .outputFPS(fps)
-      .videoBitrate(bitrate)
       .size(`${width}x${height}`)
-      .outputOption(`-pix_fmt yuva420p`)
-      .outputOption(`-crf ${crf}`)
-      .outputOption("-auto-alt-ref 0")
-      .outputOption("-threads 4")
-      .outputOption("-quality good")
-      .outputOption("-cpu-used 0")
+      .addOption("-format hap_alpha")
       .on("start", (startCommand: string) => {
+        console.log(startCommand);
         subscriber.next(startCommand);
         subscriber.next("Started encode...");
       })
@@ -50,6 +42,6 @@ const encodeVideo = ({
       })
       .save(output);
   });
-};
+}
 
-export default encodeVideo;
+export default encodeVideoHap;

@@ -7,7 +7,8 @@
     "test": "jest",
     "convert-videos": "ts-node src/cli-scripts/convert-to-gloxinia-videos.ts",
     "convert-to-images": "ts-node src/cli-scripts/convert-to-gloxinia-images.ts",
-    "convert-to-oggs": "ts-node src/cli-scripts/convert-to-ogg.ts"
+    "convert-to-oggs": "ts-node src/cli-scripts/convert-to-ogg.ts",
+    "convert-to-hap": "ts-node src/cli-scripts/convert-to-gloxinia-hap.ts"
   },
   "author": "",
   "license": "ISC",

@@ -2,15 +2,13 @@ import { existsSync } from "fs";
 import { Listr, ListrTask } from "listr2";
 import path from "path";
 import { Size } from "../types/common";
-import encodeVideo from "./encode-video";
-import getSizesForRatio from "./get-sizes-for-ratio";
+import encodeVideoWebm from "./encode-video-webm";
 import getSourceVideoInfo from "./get-source-video-info";
 import getVideoParamsMatrix from "./get-video-params-matrix";
 
 interface EncodeVideosOptions {
   inputFiles: string[];
   crfs: number[];
-  bitrates: number[];
   fpses: number[];
   outputPath: string;
   sizes: Size[];
@@ -24,8 +22,8 @@ const adjustDurationForFps = (
   return Math.round(duration * (newFps / origFps));
 };
 
-const encodeVideos = async (options: EncodeVideosOptions) => {
-  const { inputFiles, outputPath, crfs, fpses, sizes, bitrates } = options;
+const encodeVideosWebm = async (options: EncodeVideosOptions) => {
+  const { inputFiles, outputPath, crfs, fpses, sizes } = options;
 
   const tasks = await Promise.all(
     inputFiles.map(async (inputPath) => {
@@ -35,7 +33,6 @@ const encodeVideos = async (options: EncodeVideosOptions) => {
 
       const paramsMatrix = getVideoParamsMatrix({
         crfs,
-        bitrates,
         fpses,
         sizes,
       });
@@ -56,7 +53,7 @@ const encodeVideos = async (options: EncodeVideosOptions) => {
         const listrTask: ListrTask = {
           title: `Encoding ${outputFilename}`,
           task: () =>
-            encodeVideo({
+            encodeVideoWebm({
               input: path.resolve(inputPath),
               output,
               crf: params.crf,
@@ -82,4 +79,4 @@ const encodeVideos = async (options: EncodeVideosOptions) => {
   await listrTasks.run();
 };
 
-export default encodeVideos;
+export default encodeVideosWebm;

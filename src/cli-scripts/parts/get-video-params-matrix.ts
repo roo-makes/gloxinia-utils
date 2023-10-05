@@ -1,23 +1,19 @@
 import { Size } from "../types/common";
+import defaults from "../config/defaults";
 
 interface GetVideoParamsMatrixOptions {
-  crfs: number[];
-  bitrates: number[];
+  crfs?: number[];
+  bitrates?: number[];
   fpses?: number[];
   sizes?: Size[];
 }
 
-const getVideoParamsMatrix = (options: {
-  crfs: number[];
-  bitrates: number[];
-  fpses?: number[];
-  sizes?: Size[];
-}) => {
+const getVideoParamsMatrix = (options: GetVideoParamsMatrixOptions) => {
   const {
-    crfs,
-    bitrates,
-    fpses = [30],
-    sizes = [{ width: 720, height: 1280 }],
+    crfs = [defaults.crf],
+    bitrates = [defaults.bitrate],
+    fpses = [defaults.fps],
+    sizes = [{ width: 960, height: 960 }],
   } = options;
 
   return crfs.flatMap((crf) => {

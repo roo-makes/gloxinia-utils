@@ -1,6 +1,7 @@
 import { program } from "commander";
 import prompts, { PromptObject } from "prompts";
 import encodeVideosWebm from "./parts/encode-videos-webm";
+import encodeVideosHap from "./parts/encode-videos-hap";
 import gatherSourceFiles from "./parts/gather-source-files";
 import getSizesForRatio from "./parts/get-sizes-for-ratio";
 import getSourceVideoInfo from "./parts/get-source-video-info";
@@ -32,25 +33,6 @@ const validateIntArray = (input: string): boolean | string => {
   }
 };
 
-const questions: PromptObject[] = [
-  {
-    type: "text",
-    name: "crf",
-    message: "-crf value?",
-    initial: "30",
-    validate: validateIntArray,
-    format: getIntArrayFromStringList,
-  },
-  {
-    type: "text",
-    name: "fps",
-    message: "fps?",
-    initial: "60",
-    validate: validateIntArray,
-    format: getIntArrayFromStringList,
-  },
-];
-
 (async () => {
   const program = setupProgram();
   const options = program.opts();
@@ -61,14 +43,6 @@ const questions: PromptObject[] = [
   const videoInfo = await getSourceVideoInfo(inputFiles[0]);
 
   const response = await prompts([
-    {
-      type: "text",
-      name: "crf",
-      message: "-crf value?",
-      initial: "30",
-      validate: validateIntArray,
-      format: getIntArrayFromStringList,
-    },
     {
       type: "text",
       name: "fps",
@@ -95,10 +69,9 @@ const questions: PromptObject[] = [
     },
   ]);
 
-  await encodeVideosWebm({
+  await encodeVideosHap({
     inputFiles: inputFiles,
     outputPath: options.output,
-    crfs: response.crf,
     fpses: response.fps,
     sizes: response.sizes,
   });
