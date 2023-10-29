@@ -6,7 +6,7 @@
 
 var curFrame = timeToFrames(time);
 var framesPerBeat = 30;
-var factor = 1.3;
+var factor = 1.2;
 
 function customEase(t, start, end, factor) {
   var range = end - start;
