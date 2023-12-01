@@ -11,6 +11,7 @@ const encodeOgg = ({ input, output }: EncodeOggOptions) => {
   return new Observable<string>((subscriber) => {
     ffmpegCommand(path.resolve(input))
       .noVideo()
+      .addOption("-y")
       .audioCodec("libvorbis")
       .on("start", (startCommand: string) => {
         subscriber.next(startCommand);
