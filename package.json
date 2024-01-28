@@ -12,7 +12,7 @@
   },
   "author": "",
   "license": "ISC",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@4.0.2",
   "type": "commonjs",
   "dependencies": {
     "commander": "^9.4.1",
