@@ -36,6 +36,20 @@ Script to convert any audio files into `ogg`, which is the preferred format for 
 yarn convert-to-oggs -i ./path/to/audio/*.wav -o ./path/to/output
 ```
 
+### Deploy to Steam Deck
+
+Script to download the most recently pushed Linux build and send it to my Steam Deck. This requires a few things:
+
+- Both this computer and the steam deck on home wifi
+- Steam Deck has an entry in `knownhosts` linked to `steamdeck`
+- Steam Deck is on.
+
+Run it:
+
+```bash
+yarn deploy-to-deck
+```
+
 ## Authors
 
 Andrew Metcalf - Wrote the code - https://github.com/met5678
