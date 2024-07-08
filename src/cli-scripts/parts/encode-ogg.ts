@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
+import fsExtra from "fs-extra";
 
 interface EncodeOggOptions {
   input: string;
@@ -8,6 +9,8 @@ interface EncodeOggOptions {
 }
 
 const encodeOgg = ({ input, output }: EncodeOggOptions) => {
+  fsExtra.ensureDirSync(path.dirname(output));
+
   return new Observable<string>((subscriber) => {
     ffmpegCommand(path.resolve(input))
       .noVideo()

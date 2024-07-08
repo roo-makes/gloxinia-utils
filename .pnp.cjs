@@ -35,6 +35,7 @@ const RAW_RUNTIME_STATE =
           ["@types/jest", "npm:29.2.5"],\
           ["@types/node", "npm:20.12.12"],\
           ["@types/prompts", "npm:2.4.2"],\
+          ["@types/recursive-readdir", "npm:2.2.4"],\
           ["@types/rsync", "npm:0.4.36"],\
           ["commander", "npm:9.4.1"],\
           ["decompress", "npm:4.2.1"],\
@@ -44,6 +45,7 @@ const RAW_RUNTIME_STATE =
           ["jest", "virtual:fe936200931aa1d7589b57a1cb52a726b459fa7e6c3fbed51e80c41355e73c90581c29f8dc38a9f6f9486e0648d8ec16324c7bd1eab00399a23ebd8777493203#npm:29.3.1"],\
           ["listr2", "npm:8.2.1"],\
           ["prompts", "npm:2.4.2"],\
+          ["recursive-readdir", "npm:2.2.3"],\
           ["rsync", "npm:0.6.1"],\
           ["rxjs", "npm:7.8.1"],\
           ["tmp-promise", "npm:3.0.3"],\
@@ -1495,6 +1497,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/recursive-readdir", [\
+      ["npm:2.2.4", {\
+        "packageLocation": "./.yarn/cache/@types-recursive-readdir-npm-2.2.4-8feb5cee78-df74312b83.zip/node_modules/@types/recursive-readdir/",\
+        "packageDependencies": [\
+          ["@types/recursive-readdir", "npm:2.2.4"],\
+          ["@types/node", "npm:18.11.18"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/rsync", [\
       ["npm:0.4.36", {\
         "packageLocation": "./.yarn/cache/@types-rsync-npm-0.4.36-61ce6a231e-d7a67f072e.zip/node_modules/@types/rsync/",\
@@ -2907,6 +2919,7 @@ const RAW_RUNTIME_STATE =
           ["@types/jest", "npm:29.2.5"],\
           ["@types/node", "npm:20.12.12"],\
           ["@types/prompts", "npm:2.4.2"],\
+          ["@types/recursive-readdir", "npm:2.2.4"],\
           ["@types/rsync", "npm:0.4.36"],\
           ["commander", "npm:9.4.1"],\
           ["decompress", "npm:4.2.1"],\
@@ -2916,6 +2929,7 @@ const RAW_RUNTIME_STATE =
           ["jest", "virtual:fe936200931aa1d7589b57a1cb52a726b459fa7e6c3fbed51e80c41355e73c90581c29f8dc38a9f6f9486e0648d8ec16324c7bd1eab00399a23ebd8777493203#npm:29.3.1"],\
           ["listr2", "npm:8.2.1"],\
           ["prompts", "npm:2.4.2"],\
+          ["recursive-readdir", "npm:2.2.3"],\
           ["rsync", "npm:0.6.1"],\
           ["rxjs", "npm:7.8.1"],\
           ["tmp-promise", "npm:3.0.3"],\
@@ -4603,6 +4617,16 @@ const RAW_RUNTIME_STATE =
           ["inherits", "npm:2.0.4"],\
           ["string_decoder", "npm:1.3.0"],\
           ["util-deprecate", "npm:1.0.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["recursive-readdir", [\
+      ["npm:2.2.3", {\
+        "packageLocation": "./.yarn/cache/recursive-readdir-npm-2.2.3-3f177ebd90-19298852b0.zip/node_modules/recursive-readdir/",\
+        "packageDependencies": [\
+          ["recursive-readdir", "npm:2.2.3"],\
+          ["minimatch", "npm:3.1.2"]\
         ],\
         "linkType": "HARD"\
       }]\

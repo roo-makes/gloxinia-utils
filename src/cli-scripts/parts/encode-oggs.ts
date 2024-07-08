@@ -5,26 +5,37 @@ import encodeOgg from "./encode-ogg";
 
 interface EncodeOggsOptions {
   inputFiles: string[];
+  inputBasePath?: string;
   outputPath: string;
+  overwrite?: boolean;
 }
 
 const encodeOggs = async (options: EncodeOggsOptions) => {
-  const { inputFiles, outputPath } = options;
+  const { inputFiles, outputPath, inputBasePath, overwrite } = options;
 
   const tasks = inputFiles.flatMap((inputPath) => {
     const inputParts = path.parse(inputPath);
     const outputFilename = `${inputParts.name}.ogg`;
-    const output = path.resolve(outputPath, outputFilename);
 
-    if (existsSync(output)) return [];
+    const inputPathAfterBase = inputBasePath
+      ? path.dirname(inputPath.replace(inputBasePath, ""))
+      : "";
+
+    const output = path.resolve(outputPath, inputPathAfterBase, outputFilename);
+
+    if (existsSync(output) && !overwrite) {
+      console.log(`Skipping ${outputFilename} as it already exists.`);
+      return [];
+    }
 
     const listrTask: ListrTask = {
       title: `Encoding ${outputFilename}`,
-      task: () =>
-        encodeOgg({
+      task: () => {
+        return encodeOgg({
           input: inputPath,
           output,
-        }),
+        });
+      },
     };
 
     return [listrTask];

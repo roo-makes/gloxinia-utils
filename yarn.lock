@@ -989,6 +989,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/recursive-readdir@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "@types/recursive-readdir@npm:2.2.4"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: df74312b83870829b81208b6a745d9de75127ac73187808eb60581906e70f606786dd0d3c2e6c69daf6f31833ea052e6d7a3033fd0de9a7dc1eb43f10ae3df0c
+  languageName: node
+  linkType: hard
+
 "@types/rsync@npm:^0":
   version: 0.4.36
   resolution: "@types/rsync@npm:0.4.36"
@@ -2183,6 +2192,7 @@ __metadata:
     "@types/jest": "npm:^29.2.5"
     "@types/node": "npm:^20.12.12"
     "@types/prompts": "npm:^2.4.2"
+    "@types/recursive-readdir": "npm:^2.2.4"
     "@types/rsync": "npm:^0"
     commander: "npm:^9.4.1"
     decompress: "npm:^4.2.1"
@@ -2192,6 +2202,7 @@ __metadata:
     jest: "npm:^29.3.1"
     listr2: "npm:^8.2.1"
     prompts: "npm:^2.4.2"
+    recursive-readdir: "npm:^2.2.3"
     rsync: "npm:^0.6.1"
     rxjs: "npm:^7.8.1"
     tmp-promise: "npm:^3.0.3"
@@ -3186,7 +3197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.4, minimatch@npm:^3.1.1":
+"minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -3643,6 +3654,15 @@ __metadata:
     string_decoder: "npm:^1.1.1"
     util-deprecate: "npm:^1.0.1"
   checksum: b80b3e6a7fafb1c79de7db541de357f4a5ee73bd70c21672f5a7c840d27bb27bdb0151e7ba2fd82c4a888df22ce0c501b0d9f3e4dfe51688876701c437d59536
+  languageName: node
+  linkType: hard
+
+"recursive-readdir@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "recursive-readdir@npm:2.2.3"
+  dependencies:
+    minimatch: "npm:^3.0.5"
+  checksum: 19298852b0b87810aed5f2c81a73bfaaeb9ade7c9bf363f350fc1443f2cc3df66ecade5e102dfbb153fcd9df20342c301848e11e149e5f78759c1d55aa2c9c39
   languageName: node
   linkType: hard
 

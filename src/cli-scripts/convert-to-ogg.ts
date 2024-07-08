@@ -6,28 +6,12 @@ import encodeOggs from "./parts/encode-oggs";
 const setupProgram = () => {
   program
     .requiredOption("-i, --input <inputs...>", "input file or directory")
-    .option("-o, --output <output>", "output directory");
+    .option("-o, --output <output>", "output directory")
+    .option("-r", "--recursive <recursive>", false);
 
   program.parse(process.argv);
 
   return program;
-};
-
-const getIntArrayFromStringList = (input: string): number[] => {
-  return input.split(",").map((part) => {
-    const intVal = parseInt(part);
-    if (isNaN(intVal)) throw `Error: "${part}" is not a number`;
-    return intVal;
-  });
-};
-
-const validateIntArray = (input: string): boolean | string => {
-  try {
-    getIntArrayFromStringList(input);
-    return true;
-  } catch (e) {
-    return String(e);
-  }
 };
 
 const questions: PromptObject[] = [
@@ -42,19 +26,26 @@ const questions: PromptObject[] = [
 (async () => {
   const program = setupProgram();
   const options = program.opts();
-  const inputFiles = gatherSourceFiles(options.input, [
-    "mp3",
-    "wav",
-    "m4a",
-    "ogg",
-  ]);
+  const inputFiles = await gatherSourceFiles(
+    options.input,
+    ["mp3", "wav", "m4a", "ogg"],
+    options.r
+  );
 
   console.log(`Found ${inputFiles.length} input audio files.`);
 
   await prompts(questions);
 
-  await encodeOggs({
-    inputFiles,
-    outputPath: options.output,
-  });
+  if (options.r) {
+    await encodeOggs({
+      inputFiles,
+      inputBasePath: options.input[0],
+      outputPath: options.output,
+    });
+  } else {
+    await encodeOggs({
+      inputFiles,
+      outputPath: options.output,
+    });
+  }
 })();

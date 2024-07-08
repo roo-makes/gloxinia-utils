@@ -36,6 +36,17 @@ Script to convert any audio files into `ogg`, which is the preferred format for 
 yarn convert-to-oggs -i ./path/to/audio/*.wav -o ./path/to/output
 ```
 
+You can also supply `-r` to do this recursively. It will mimic the directory structure found in the supplied input directory. When doing this, pass a single directory rather than a wildcard. For example:
+
+```
+yarn convert-to-oggs -i ../gloxinia-content/vo-final -o ../gloxinia-v4/Assets/_Game/Audio/Voice
+```
+
+The convention is:
+[performer]/[category]/[file].wav
+
+I have a function in my `.zshrc` allowing me to run this by writing `glox-convert-vo` (no path arguments needed).
+
 ### Deploy to Steam Deck
 
 Script to download the most recently pushed Linux build and send it to my Steam Deck. This requires a few things:
@@ -49,6 +60,8 @@ Run it:
 ```bash
 yarn deploy-to-deck
 ```
+
+TODO: Possibly just write this as a script I can run directly on my steam deck, which connects and downloads remotely. Doesn't require laptop/wifi setup, good for taking steamdeck on the road.
 
 ## Authors
 
