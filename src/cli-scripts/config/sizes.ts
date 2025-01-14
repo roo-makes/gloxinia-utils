@@ -2,14 +2,13 @@ interface SizesConfig {
   [index: string]: number[];
 }
 
+/**
+ * Widths for each aspect ratio
+ */
 const sizesConfig: SizesConfig = {
-  "3:4": [240, 360, 480, 600, 720, 960],
+  "3:4": [480, 720, 960],
 
-  "1:1": [1080, 960, 720],
-
-  "4:3": [],
-
-  "3:2": [],
+  "1:1": [1280, 960],
 
   "16:9": [1280, 1920],
 };

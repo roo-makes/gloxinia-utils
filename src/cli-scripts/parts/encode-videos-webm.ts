@@ -2,15 +2,21 @@ import { existsSync } from "fs";
 import { Listr, ListrTask } from "listr2";
 import path from "path";
 import { Size } from "../types/common";
-import encodeVideoWebm from "./encode-video-webm";
+import {
+  fileExistsAndIsNewer,
+  fileExistsAndIsNewerSync,
+} from "../utils/file-exists-and-is-newer";
+import { getOutputPath } from "../utils/get-output-path";
+import encodeVideoWebm from "./ffmpeg/encode-video-webm";
 import getSourceVideoInfo from "./get-source-video-info";
 import getVideoParamsMatrix from "./get-video-params-matrix";
 
 interface EncodeVideosOptions {
   inputFiles: string[];
+  inputBasePath: string;
   crfs: number[];
   fpses: number[];
-  outputPath: string;
+  outputBasePath: string;
   sizes: Size[];
 }
 
@@ -23,12 +29,11 @@ const adjustDurationForFps = (
 };
 
 const encodeVideosWebm = async (options: EncodeVideosOptions) => {
-  const { inputFiles, outputPath, crfs, fpses, sizes } = options;
+  const { inputFiles, outputBasePath, inputBasePath, crfs, fpses, sizes } =
+    options;
 
   const tasks = await Promise.all(
     inputFiles.map(async (inputPath) => {
-      const inputParts = path.parse(inputPath);
-      const inputFile = inputParts.base;
       const { fps, duration } = await getSourceVideoInfo(inputPath);
 
       const paramsMatrix = getVideoParamsMatrix({
@@ -45,17 +50,31 @@ const encodeVideosWebm = async (options: EncodeVideosOptions) => {
           adjustDurationForFps(duration, fps, params.fps) + "d",
           params.crf + "crf",
         ];
-        const outputFilename = `${inputParts.name}-${stats.join("-")}.webm`;
-        const output = path.resolve(outputPath, outputFilename);
 
-        if (existsSync(output)) return [];
+        const { outputFilename, outputPath } = getOutputPath({
+          inputPath,
+          inputBasePath,
+          outputBasePath,
+          outputFilenameExtras: stats,
+          outputExtension: "webm",
+        });
+
+        if (
+          fileExistsAndIsNewerSync({
+            inputPath,
+            outputPath,
+          })
+        ) {
+          console.log(`Skipping ${outputFilename} -- exists and is newer.`);
+          return [];
+        }
 
         const listrTask: ListrTask = {
           title: `Encoding ${outputFilename}`,
           task: () =>
             encodeVideoWebm({
               input: path.resolve(inputPath),
-              output,
+              output: outputPath,
               crf: params.crf,
               bitrate: params.bitrate,
               height: params.size.height,
@@ -68,7 +87,7 @@ const encodeVideosWebm = async (options: EncodeVideosOptions) => {
       });
 
       return {
-        title: `Processing ${inputFile}`,
+        title: `Processing ${inputPath}`,
         task: (ctx: any, task: any): Listr => task.newListr(videoTasks),
       };
     })

@@ -3,7 +3,7 @@ import { Listr, ListrTask } from "listr2";
 import path from "path";
 import { ensureDir } from "fs-extra";
 import { Size } from "../types/common";
-import encodeImageSequence from "./encode-image-sequence";
+import encodeImageSequence from "./ffmpeg/encode-image-sequence";
 import getSizesForRatio from "./get-sizes-for-ratio";
 import getSourceVideoInfo from "./get-source-video-info";
 

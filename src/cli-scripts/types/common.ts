@@ -3,7 +3,7 @@ export interface Size {
   width: number;
 }
 
-export interface VideoStats {
+export interface VideoInfo {
   size: Size;
   fps: number;
   duration: number;

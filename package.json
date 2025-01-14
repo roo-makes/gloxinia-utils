@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "convert-videos": "ts-node src/cli-scripts/convert-to-gloxinia-videos.ts",
+    "convert-to-webm": "ts-node src/cli-scripts/convert-to-gloxinia-webm.ts",
     "convert-to-images": "ts-node src/cli-scripts/convert-to-gloxinia-images.ts",
-    "convert-to-oggs": "ts-node src/cli-scripts/convert-to-ogg.ts",
+    "convert-to-ogg": "ts-node src/cli-scripts/convert-to-ogg.ts",
     "convert-to-hap": "ts-node src/cli-scripts/convert-to-gloxinia-hap.ts",
     "deploy-to-deck": "ts-node src/cli-scripts/deploy-to-deck.ts"
   },
@@ -16,7 +16,7 @@
   "packageManager": "yarn@4.0.2",
   "type": "commonjs",
   "dependencies": {
-    "commander": "^9.4.1",
+    "commander": "^13.0.0",
     "decompress": "^4.2.1",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^11.1.0",

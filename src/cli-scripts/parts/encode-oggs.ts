@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
 import { Listr, ListrTask } from "listr2";
 import path from "path";
-import encodeOgg from "./encode-ogg";
+import encodeOgg from "./ffmpeg/encode-ogg";
 
 interface EncodeOggsOptions {
   inputFiles: string[];

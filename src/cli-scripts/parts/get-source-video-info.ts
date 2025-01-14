@@ -1,11 +1,5 @@
-import { ffprobe, FfprobeData } from "fluent-ffmpeg";
-import { Size } from "../types/common";
-
-interface VideoInfo {
-  size: Size;
-  fps: number;
-  duration: number;
-}
+import { ffprobe } from "fluent-ffmpeg";
+import { VideoInfo } from "../types/common";
 
 const getSourceVideoInfo = (inputPath: string): Promise<VideoInfo> => {
   return new Promise((resolve, reject) => {

@@ -1,18 +1,7 @@
-import { program } from "commander";
 import prompts, { PromptObject } from "prompts";
 import gatherSourceFiles from "./parts/gather-source-files";
 import encodeOggs from "./parts/encode-oggs";
-
-const setupProgram = () => {
-  program
-    .requiredOption("-i, --input <inputs...>", "input file or directory")
-    .option("-o, --output <output>", "output directory")
-    .option("-r", "--recursive <recursive>", false);
-
-  program.parse(process.argv);
-
-  return program;
-};
+import { setupProgram } from "./utils/setup-program";
 
 const questions: PromptObject[] = [
   {

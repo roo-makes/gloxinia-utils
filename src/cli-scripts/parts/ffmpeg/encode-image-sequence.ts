@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
-import { Size } from "../types/common";
+import { Size } from "../../types/common";
 
 interface EncodeImageSequenceOptions {
   input: string;

@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
+import fsExtra from "fs-extra";
 
 interface EncodeVideoOptions {
   input: string;
@@ -21,6 +22,8 @@ function encodeVideoWebm({
   height,
   width,
 }: EncodeVideoOptions): Observable<string> {
+  fsExtra.ensureDirSync(path.dirname(output));
+
   return new Observable<string>((subscriber) => {
     ffmpegCommand(path.resolve(input))
       .noAudio()
