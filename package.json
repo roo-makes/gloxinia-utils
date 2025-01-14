@@ -29,6 +29,7 @@
     "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@tsconfig/node16": "^1.0.3",
     "@types/decompress": "^4",
     "@types/fluent-ffmpeg": "^2.1.20",
@@ -40,9 +41,12 @@
     "@types/prompts": "^2.4.2",
     "@types/recursive-readdir": "^2.2.4",
     "@types/rsync": "^0",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
     "jest": "^29.3.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "typescript-eslint": "^8.19.1"
   }
 }
