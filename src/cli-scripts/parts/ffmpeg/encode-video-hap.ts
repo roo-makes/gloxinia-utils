@@ -1,15 +1,9 @@
 import { Observable } from "rxjs";
 import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
-import { start } from "repl";
-
-interface EncodeVideoOptionsHap {
-  input: string;
-  output: string;
-  fps: number;
-  height: Number;
-  width: Number;
-}
+import fsExtra from "fs-extra";
+import { attachFfmpegLogging } from "../../utils/attach-ffmpeg-logging";
+import { EncodeVideoOptions } from "../../types/common";
 
 function encodeVideoHap({
   input,
@@ -17,30 +11,20 @@ function encodeVideoHap({
   fps,
   height,
   width,
-}: EncodeVideoOptionsHap): Observable<string> {
+}: EncodeVideoOptions): Observable<string> {
+  fsExtra.ensureDirSync(path.dirname(output));
+
   return new Observable<string>((subscriber) => {
-    ffmpegCommand(path.resolve(input))
+    const ffmpegBuiltCommand = ffmpegCommand(path.resolve(input))
       .noAudio()
       .videoCodec("hap")
       .outputFPS(fps)
       .size(`${width}x${height}`)
-      .addOption("-format hap_alpha")
-      .on("start", (startCommand: string) => {
-        console.log(startCommand);
-        subscriber.next(startCommand);
-        subscriber.next("Started encode...");
-      })
-      .on("progress", ({ percent, targetSize }) => {
-        subscriber.next(`Progress: ${percent}%`);
-      })
-      .on("error", (err, stdout, stderr) => {
-        subscriber.error(err);
-      })
-      .on("end", (stdout, stderr) => {
-        subscriber.next(stdout);
-        subscriber.complete();
-      })
-      .save(output);
+      .outputOption("-format hap_alpha");
+
+    attachFfmpegLogging(ffmpegBuiltCommand, subscriber);
+
+    ffmpegBuiltCommand.save(output);
   });
 }
 
