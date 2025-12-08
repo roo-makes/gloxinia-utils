@@ -5,23 +5,23 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "convert-to-webm": "ts-node src/cli-scripts/convert-to-gloxinia-webm.ts",
-    "convert-to-images": "ts-node src/cli-scripts/convert-to-gloxinia-images.ts",
-    "convert-to-ogg": "ts-node src/cli-scripts/convert-to-ogg.ts",
-    "convert-to-hap": "ts-node src/cli-scripts/convert-to-gloxinia-hap.ts",
-    "deploy-to-deck": "ts-node src/cli-scripts/deploy-to-deck.ts"
+    "convert-to-webm": "tsx src/cli-scripts/convert-to-gloxinia-webm.ts",
+    "convert-to-images": "tsx src/cli-scripts/convert-to-gloxinia-images.ts",
+    "convert-to-ogg": "tsx src/cli-scripts/convert-to-ogg.ts",
+    "convert-to-hap": "tsx src/cli-scripts/convert-to-gloxinia-hap.ts",
+    "deploy-to-deck": "tsx src/cli-scripts/deploy-to-deck.ts"
   },
   "author": "",
   "license": "ISC",
   "packageManager": "yarn@4.0.2",
   "type": "commonjs",
   "dependencies": {
-    "commander": "^13.0.0",
+    "commander": "^14.0.2",
     "decompress": "^4.2.1",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^11.1.0",
     "glob": "^8.0.3",
-    "listr2": "^8.2.1",
+    "listr2": "^9.0.5",
     "prompts": "^2.4.2",
     "recursive-readdir": "^2.2.3",
     "rsync": "^0.6.1",
@@ -46,7 +46,12 @@
     "jest": "^29.3.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
+    "tsx": "^4.21.0",
     "typescript": "^4.9.4",
     "typescript-eslint": "^8.19.1"
+  },
+  "volta": {
+    "node": "24.11.1",
+    "yarn": "4.12.0"
   }
 }
