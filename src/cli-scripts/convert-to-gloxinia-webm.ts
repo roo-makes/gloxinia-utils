@@ -1,11 +1,11 @@
 import prompts, { PromptObject } from "prompts";
 import { getIntArrayFromStringList } from "./utils/get-int-array-from-string-list";
-import encodeVideosWebm from "./parts/encode-videos-webm";
 import gatherSourceFiles from "./parts/gather-source-files";
 import getSizesForRatio from "./parts/get-sizes-for-ratio";
 import getSourceVideoInfo from "./parts/get-source-video-info";
 import { setupProgram } from "./utils/setup-program";
 import { VideoInfo } from "./types/common";
+import { encodeVideos } from "./parts/encode-videos";
 
 type ResponseType = {
   crf: number[];
@@ -108,13 +108,14 @@ const getRatioToFilesMap = async (
       continue;
     }
     console.log(`Encoding ${files.length} videos with ratio ${ratio}`);
-    await encodeVideosWebm({
+    await encodeVideos({
       inputFiles: files.map(({ path }) => path),
       inputBasePath: options.input[0],
       outputBasePath: options.output,
       crfs: response.crf,
       fpses: response.fps,
       sizes,
+      outputFormat: "webm",
     });
   }
 })();

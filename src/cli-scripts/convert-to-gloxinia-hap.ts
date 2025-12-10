@@ -1,20 +1,10 @@
 import { program } from "commander";
 import prompts, { PromptObject } from "prompts";
-import encodeVideosWebm from "./parts/encode-videos-webm";
-import encodeVideosHap from "./parts/encode-videos-hap";
+import { encodeVideos } from "./parts/encode-videos";
 import gatherSourceFiles from "./parts/gather-source-files";
 import getSizesForRatio from "./parts/get-sizes-for-ratio";
 import getSourceVideoInfo from "./parts/get-source-video-info";
-
-const setupProgram = () => {
-  program
-    .requiredOption("-i, --input <inputs...>", "input file or directory")
-    .option("-o, --output <output>", "output directory");
-
-  program.parse(process.argv);
-
-  return program;
-};
+import { setupProgram } from "./utils/setup-program";
 
 const getIntArrayFromStringList = (input: string): number[] => {
   return input.split(",").map((part) => {
@@ -51,28 +41,29 @@ const validateIntArray = (input: string): boolean | string => {
       validate: validateIntArray,
       format: getIntArrayFromStringList,
     },
-    {
-      type: "multiselect",
-      message: "Select output sizes (spacebar to toggle)",
-      instructions: false,
-      name: "sizes",
-      choices: getSizesForRatio(
-        videoInfo.size.width / videoInfo.size.height
-      ).map((size) => {
-        return {
-          title: `${size.width} x ${size.height}`,
-          value: size,
-          selected: true,
-        };
-      }),
-      min: 1,
-    },
+    // {
+    //   type: "multiselect",
+    //   message: "Select output sizes (spacebar to toggle)",
+    //   instructions: false,
+    //   name: "sizes",
+    //   choices: getSizesForRatio(
+    //     videoInfo.size.width / videoInfo.size.height
+    //   ).map((size) => {
+    //     return {
+    //       title: `${size.width} x ${size.height}`,
+    //       value: size,
+    //       selected: true,
+    //     };
+    //   }),
+    //   min: 1,
+    // },
   ]);
 
-  await encodeVideosHap({
+  await encodeVideos({
     inputFiles: inputFiles,
-    outputPath: options.output,
+    outputBasePath: options.output,
+    inputBasePath: options.input,
+    outputFormat: "hap",
     fpses: response.fps,
-    sizes: response.sizes,
   });
 })();
