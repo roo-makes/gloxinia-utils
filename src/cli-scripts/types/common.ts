@@ -11,10 +11,16 @@ export type VideoInfo = {
 
 export type OutputVideoFormat = "webm" | "hap";
 
+export type QualitySettings = {
+  crf: number;
+  bitrate: number;
+};
+
 export type EncodeVideoOptions = {
   input: string;
   output: string;
-  fps: number;
   height: number;
   width: number;
+  fps: number;
+  qualitySettings?: QualitySettings;
 };
