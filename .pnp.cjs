@@ -29,7 +29,7 @@ const RAW_RUNTIME_STATE =
           ["@eslint/js", "npm:9.18.0"],\
           ["@tsconfig/node16", "npm:1.0.3"],\
           ["@types/decompress", "npm:4.2.7"],\
-          ["@types/fluent-ffmpeg", "npm:2.1.20"],\
+          ["@types/ffprobe", "npm:1.1.8"],\
           ["@types/fs-extra", "npm:9.0.13"],\
           ["@types/glob", "npm:8.0.0"],\
           ["@types/inquirer", "npm:9.0.3"],\
@@ -41,7 +41,7 @@ const RAW_RUNTIME_STATE =
           ["commander", "npm:14.0.2"],\
           ["decompress", "npm:4.2.1"],\
           ["eslint", "virtual:fe936200931aa1d7589b57a1cb52a726b459fa7e6c3fbed51e80c41355e73c90581c29f8dc38a9f6f9486e0648d8ec16324c7bd1eab00399a23ebd8777493203#npm:9.18.0"],\
-          ["fluent-ffmpeg", "npm:2.1.2"],\
+          ["ffprobe", "npm:1.1.2"],\
           ["fs-extra", "npm:11.1.0"],\
           ["glob", "npm:8.0.3"],\
           ["globals", "npm:15.14.0"],\
@@ -1784,12 +1784,11 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
-    ["@types/fluent-ffmpeg", [\
-      ["npm:2.1.20", {\
-        "packageLocation": "./.yarn/cache/@types-fluent-ffmpeg-npm-2.1.20-46c4294bd5-086ff1354d.zip/node_modules/@types/fluent-ffmpeg/",\
+    ["@types/ffprobe", [\
+      ["npm:1.1.8", {\
+        "packageLocation": "./.yarn/cache/@types-ffprobe-npm-1.1.8-2483453ddb-7b4567f284.zip/node_modules/@types/ffprobe/",\
         "packageDependencies": [\
-          ["@types/fluent-ffmpeg", "npm:2.1.20"],\
-          ["@types/node", "npm:18.11.18"]\
+          ["@types/ffprobe", "npm:1.1.8"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -2180,6 +2179,17 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["JSONStream", [\
+      ["npm:1.3.5", {\
+        "packageLocation": "./.yarn/cache/JSONStream-npm-1.3.5-1987f2e6dd-e30daf7b9b.zip/node_modules/JSONStream/",\
+        "packageDependencies": [\
+          ["JSONStream", "npm:1.3.5"],\
+          ["jsonparse", "npm:1.3.1"],\
+          ["through", "npm:2.3.8"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["abbrev", [\
       ["npm:1.1.1", {\
         "packageLocation": "./.yarn/cache/abbrev-npm-1.1.1-3659247eab-2d88294118.zip/node_modules/abbrev/",\
@@ -2405,15 +2415,6 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
-    ["async", [\
-      ["npm:3.2.4", {\
-        "packageLocation": "./.yarn/cache/async-npm-3.2.4-aba13508f9-bebb5dc225.zip/node_modules/async/",\
-        "packageDependencies": [\
-          ["async", "npm:3.2.4"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
     ["babel-jest", [\
       ["npm:29.3.1", {\
         "packageLocation": "./.yarn/cache/babel-jest-npm-29.3.1-871da66c2a-249cf1f31d.zip/node_modules/babel-jest/",\
@@ -2576,6 +2577,16 @@ const RAW_RUNTIME_STATE =
           ["bl", "npm:1.2.3"],\
           ["readable-stream", "npm:2.3.8"],\
           ["safe-buffer", "npm:5.2.1"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:4.1.0", {\
+        "packageLocation": "./.yarn/cache/bl-npm-4.1.0-7f94cdcf3f-b7904e66ed.zip/node_modules/bl/",\
+        "packageDependencies": [\
+          ["bl", "npm:4.1.0"],\
+          ["buffer", "npm:5.7.1"],\
+          ["inherits", "npm:2.0.4"],\
+          ["readable-stream", "npm:3.6.2"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3167,6 +3178,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["deferential", [\
+      ["npm:1.0.0", {\
+        "packageLocation": "./.yarn/cache/deferential-npm-1.0.0-0452c40b0b-2f3b188428.zip/node_modules/deferential/",\
+        "packageDependencies": [\
+          ["deferential", "npm:1.0.0"],\
+          ["native-promise-only", "npm:0.8.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["delegates", [\
       ["npm:1.0.0", {\
         "packageLocation": "./.yarn/cache/delegates-npm-1.0.0-9b1942d75f-a51744d9b5.zip/node_modules/delegates/",\
@@ -3633,6 +3654,18 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["ffprobe", [\
+      ["npm:1.1.2", {\
+        "packageLocation": "./.yarn/cache/ffprobe-npm-1.1.2-439d0975f4-af24f7a868.zip/node_modules/ffprobe/",\
+        "packageDependencies": [\
+          ["ffprobe", "npm:1.1.2"],\
+          ["JSONStream", "npm:1.3.5"],\
+          ["bl", "npm:4.1.0"],\
+          ["deferential", "npm:1.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["file-entry-cache", [\
       ["npm:8.0.0", {\
         "packageLocation": "./.yarn/cache/file-entry-cache-npm-8.0.0-5b09d19a83-afe55c4de4.zip/node_modules/file-entry-cache/",\
@@ -3720,17 +3753,6 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/flatted-npm-3.3.2-6bf77e6e67-ac3c159742.zip/node_modules/flatted/",\
         "packageDependencies": [\
           ["flatted", "npm:3.3.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["fluent-ffmpeg", [\
-      ["npm:2.1.2", {\
-        "packageLocation": "./.yarn/cache/fluent-ffmpeg-npm-2.1.2-692c218f68-a6810fefd4.zip/node_modules/fluent-ffmpeg/",\
-        "packageDependencies": [\
-          ["fluent-ffmpeg", "npm:2.1.2"],\
-          ["async", "npm:3.2.4"],\
-          ["which", "npm:1.3.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3966,7 +3988,7 @@ const RAW_RUNTIME_STATE =
           ["@eslint/js", "npm:9.18.0"],\
           ["@tsconfig/node16", "npm:1.0.3"],\
           ["@types/decompress", "npm:4.2.7"],\
-          ["@types/fluent-ffmpeg", "npm:2.1.20"],\
+          ["@types/ffprobe", "npm:1.1.8"],\
           ["@types/fs-extra", "npm:9.0.13"],\
           ["@types/glob", "npm:8.0.0"],\
           ["@types/inquirer", "npm:9.0.3"],\
@@ -3978,7 +4000,7 @@ const RAW_RUNTIME_STATE =
           ["commander", "npm:14.0.2"],\
           ["decompress", "npm:4.2.1"],\
           ["eslint", "virtual:fe936200931aa1d7589b57a1cb52a726b459fa7e6c3fbed51e80c41355e73c90581c29f8dc38a9f6f9486e0648d8ec16324c7bd1eab00399a23ebd8777493203#npm:9.18.0"],\
-          ["fluent-ffmpeg", "npm:2.1.2"],\
+          ["ffprobe", "npm:1.1.2"],\
           ["fs-extra", "npm:11.1.0"],\
           ["glob", "npm:8.0.3"],\
           ["globals", "npm:15.14.0"],\
@@ -5036,6 +5058,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["jsonparse", [\
+      ["npm:1.3.1", {\
+        "packageLocation": "./.yarn/cache/jsonparse-npm-1.3.1-b6fde74828-24531e956f.zip/node_modules/jsonparse/",\
+        "packageDependencies": [\
+          ["jsonparse", "npm:1.3.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["keyv", [\
       ["npm:4.5.4", {\
         "packageLocation": "./.yarn/cache/keyv-npm-4.5.4-4c8e2cf7f7-167eb6ef64.zip/node_modules/keyv/",\
@@ -5421,6 +5452,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/ms-npm-2.1.3-81ff3cfac1-aa92de6080.zip/node_modules/ms/",\
         "packageDependencies": [\
           ["ms", "npm:2.1.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["native-promise-only", [\
+      ["npm:0.8.1", {\
+        "packageLocation": "./.yarn/cache/native-promise-only-npm-0.8.1-fb8355ffa6-fbc99d8dc2.zip/node_modules/native-promise-only/",\
+        "packageDependencies": [\
+          ["native-promise-only", "npm:0.8.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -5889,6 +5929,16 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/readable-stream-npm-3.6.0-23a4a5eb56-b80b3e6a7f.zip/node_modules/readable-stream/",\
         "packageDependencies": [\
           ["readable-stream", "npm:3.6.0"],\
+          ["inherits", "npm:2.0.4"],\
+          ["string_decoder", "npm:1.3.0"],\
+          ["util-deprecate", "npm:1.0.2"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:3.6.2", {\
+        "packageLocation": "./.yarn/cache/readable-stream-npm-3.6.2-d2a6069158-d9e3e53193.zip/node_modules/readable-stream/",\
+        "packageDependencies": [\
+          ["readable-stream", "npm:3.6.2"],\
           ["inherits", "npm:2.0.4"],\
           ["string_decoder", "npm:1.3.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -6855,14 +6905,6 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["which", [\
-      ["npm:1.3.1", {\
-        "packageLocation": "./.yarn/cache/which-npm-1.3.1-f0ebb8bdd8-549dcf1752.zip/node_modules/which/",\
-        "packageDependencies": [\
-          ["which", "npm:1.3.1"],\
-          ["isexe", "npm:2.0.0"]\
-        ],\
-        "linkType": "HARD"\
-      }],\
       ["npm:2.0.2", {\
         "packageLocation": "./.yarn/cache/which-npm-2.0.2-320ddf72f7-4782f8a1d6.zip/node_modules/which/",\
         "packageDependencies": [\

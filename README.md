@@ -6,6 +6,11 @@ This typescript repo contains utilities assisting in the development of [Gloxini
 
 This repo uses yarn zero-installs, and should therefore mostly work right off the bat. Clone the repo and `cd` into it.
 
+The only prerequisite is to install `ffmpeg` with a version that has support for `hap` codes. The homebrew version (>=v8) has this, so you just need to run:
+```bash
+brew install ffmpeg
+```
+
 ## Scripts
 
 ### Convert to Gloxinia Videos
