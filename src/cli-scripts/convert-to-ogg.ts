@@ -25,16 +25,9 @@ const questions: PromptObject[] = [
 
   await prompts(questions);
 
-  if (options.r) {
-    await encodeOggs({
-      inputFiles,
-      inputBasePath: options.input[0],
-      outputPath: options.output,
-    });
-  } else {
-    await encodeOggs({
-      inputFiles,
-      outputPath: options.output,
-    });
-  }
+  await encodeOggs({
+    inputFiles,
+    inputBasePath: options.input[0],
+    outputPath: options.output,
+  });
 })();

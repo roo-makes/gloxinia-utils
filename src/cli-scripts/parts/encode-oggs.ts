@@ -1,11 +1,13 @@
 import { existsSync } from "fs";
 import { Listr, ListrTask } from "listr2";
 import path from "path";
+import { fileExistsAndIsNewerSync } from "../utils/file-exists-and-is-newer";
+import { getOutputPath } from "../utils/get-output-path";
 import encodeOgg from "./ffmpeg/encode-ogg";
 
 interface EncodeOggsOptions {
   inputFiles: string[];
-  inputBasePath?: string;
+  inputBasePath: string;
   outputPath: string;
   overwrite?: boolean;
 }
@@ -14,17 +16,21 @@ const encodeOggs = async (options: EncodeOggsOptions) => {
   const { inputFiles, outputPath, inputBasePath, overwrite } = options;
 
   const tasks = inputFiles.flatMap((inputPath) => {
-    const inputParts = path.parse(inputPath);
-    const outputFilename = `${inputParts.name}.ogg`;
+    const { outputPath: outputPathForFile, outputFilename } = getOutputPath({
+      inputPath,
+      inputBasePath,
+      outputBasePath: outputPath,
+      outputExtension: "ogg",
+    });
 
-    const inputPathAfterBase = inputBasePath
-      ? path.dirname(inputPath.replace(inputBasePath, ""))
-      : "";
-
-    const output = path.resolve(outputPath, inputPathAfterBase, outputFilename);
-
-    if (existsSync(output) && !overwrite) {
-      console.log(`Skipping ${outputFilename} as it already exists.`);
+    if (
+      fileExistsAndIsNewerSync({
+        inputPath,
+        outputPath: outputPathForFile,
+      }) &&
+      !overwrite
+    ) {
+      console.log(`Skipping ${outputFilename} -- exists and is newer.`);
       return [];
     }
 
@@ -33,7 +39,7 @@ const encodeOggs = async (options: EncodeOggsOptions) => {
       task: () => {
         return encodeOgg({
           input: inputPath,
-          output,
+          output: outputPathForFile,
         });
       },
     };
