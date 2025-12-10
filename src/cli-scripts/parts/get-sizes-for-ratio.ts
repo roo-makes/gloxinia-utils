@@ -1,5 +1,5 @@
 import { Size } from "../types/common";
-import defaultSizes, { SizesConfig } from "../config/sizes";
+import { WIDTH_OPTIONS_BY_RATIO, SizesConfig } from "../config/sizes";
 
 const convertSizesConfigToDecimal = (sizesConfig: SizesConfig): SizesConfig => {
   return Object.keys(sizesConfig).reduce((acc: SizesConfig, ratio) => {
@@ -17,7 +17,9 @@ const getRoundedString = (input: number): string =>
 
 const getSizesForRatio = (ratio: number): Size[] => {
   const ratioKey = getRoundedString(ratio);
-  const decimalDefaultSizes = convertSizesConfigToDecimal(defaultSizes);
+  const decimalDefaultSizes = convertSizesConfigToDecimal(
+    WIDTH_OPTIONS_BY_RATIO
+  );
 
   const widths = decimalDefaultSizes[ratioKey];
 
