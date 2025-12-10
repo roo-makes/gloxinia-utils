@@ -29,8 +29,9 @@ export const getOutputPath = ({
   );
 
   const outputFilename =
-    [inputParts.name, ...(outputFilenameExtras || [])].join("-") +
-    `.${outputExtension}`;
+    [inputParts.name, ...(outputFilenameExtras || []).filter(Boolean)].join(
+      "-"
+    ) + `.${outputExtension}`;
 
   const outputPath = path.resolve(outputDir, `${outputFilename}`);
 

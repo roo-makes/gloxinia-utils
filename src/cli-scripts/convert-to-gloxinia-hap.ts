@@ -26,7 +26,7 @@ const validateIntArray = (input: string): boolean | string => {
 (async () => {
   const program = setupProgram();
   const options = program.opts();
-  const inputFiles = await gatherSourceFiles(options.input);
+  const inputFiles = await gatherSourceFiles(options.input, ["mov"], options.r);
 
   console.log(`Found ${inputFiles.length} input videos`);
 
