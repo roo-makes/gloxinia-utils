@@ -1,8 +1,7 @@
 import { Observable } from "rxjs";
-import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
 import { Size } from "../../types/common";
-import { attachFfmpegLogging } from "../../utils/attach-ffmpeg-logging";
+import { runFfmpegObservable } from "./run-ffmpeg-observable";
 
 interface EncodeImageSequenceOptions {
   input: string;
@@ -11,23 +10,26 @@ interface EncodeImageSequenceOptions {
   size: Size;
 }
 
-const encodeImageSequence = ({
+function encodeImageSequence({
   input,
   output,
   outputPrefix,
   size,
-}: EncodeImageSequenceOptions) => {
-  return new Observable<string>((subscriber) => {
-    const ffmpegBuiltCommand = ffmpegCommand(path.resolve(input)).size(
-      `${size.width}x${size.height}`
-    );
+}: EncodeImageSequenceOptions): Observable<string> {
+  // Generate output path with frame number pattern
+  // %04d means 4-digit zero-padded numbers (0001, 0002, etc.)
+  const outputPath = path.resolve(output, `./${outputPrefix}-f%04d.png`);
 
-    attachFfmpegLogging(ffmpegBuiltCommand, subscriber);
-
-    ffmpegBuiltCommand.save(
-      path.resolve(output, `./${outputPrefix}-f%04d.png`)
-    );
+  return runFfmpegObservable({
+    inputPath: path.resolve(input),
+    outputPath: outputPath,
+    args: [
+      "-an", // Remove audio (not needed for image sequences)
+      "-filter:v",
+      `scale=${size.width}:${size.height}`, // Scale to target dimensions
+      // PNG format is automatically detected from .png extension
+    ],
   });
-};
+}
 
 export default encodeImageSequence;

@@ -1,8 +1,5 @@
-import { Observable } from "rxjs";
-import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
-import fsExtra from "fs-extra";
-import { attachFfmpegLogging } from "../../utils/attach-ffmpeg-logging";
+import { runFfmpegObservable } from "./run-ffmpeg-observable";
 
 interface EncodeOggOptions {
   input: string;
@@ -10,17 +7,10 @@ interface EncodeOggOptions {
 }
 
 const encodeOgg = ({ input, output }: EncodeOggOptions) => {
-  fsExtra.ensureDirSync(path.dirname(output));
-
-  return new Observable<string>((subscriber) => {
-    const ffmpegBuiltCommand = ffmpegCommand(path.resolve(input))
-      .noVideo()
-      .addOption("-y")
-      .audioCodec("libvorbis");
-
-    attachFfmpegLogging(ffmpegBuiltCommand, subscriber);
-
-    ffmpegBuiltCommand.save(output);
+  return runFfmpegObservable({
+    inputPath: path.resolve(input),
+    outputPath: output,
+    args: ["-an", "-c:a", "libvorbis"],
   });
 };
 

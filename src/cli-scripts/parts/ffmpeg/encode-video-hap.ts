@@ -1,9 +1,7 @@
 import { Observable } from "rxjs";
-import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
-import fsExtra from "fs-extra";
-import { attachFfmpegLogging } from "../../utils/attach-ffmpeg-logging";
 import { EncodeVideoOptions } from "../../types/common";
+import { runFfmpegObservable } from "./run-ffmpeg-observable";
 
 function encodeVideoHap({
   input,
@@ -12,19 +10,24 @@ function encodeVideoHap({
   height,
   width,
 }: EncodeVideoOptions): Observable<string> {
-  fsExtra.ensureDirSync(path.dirname(output));
+  return runFfmpegObservable({
+    inputPath: path.resolve(input),
+    outputPath: output,
+    args: [
+      "-an", // no audio
 
-  return new Observable<string>((subscriber) => {
-    const ffmpegBuiltCommand = ffmpegCommand(path.resolve(input))
-      .noAudio()
-      .videoCodec("hap")
-      .outputFPS(fps)
-      .size(`${width}x${height}`)
-      .outputOption("-format hap_alpha");
+      "-filter:v",
+      `scale=${width}:${height}`,
 
-    attachFfmpegLogging(ffmpegBuiltCommand, subscriber);
+      "-c:v",
+      "hap",
 
-    ffmpegBuiltCommand.save(output);
+      "-format",
+      "hap_alpha",
+
+      "-r",
+      `${fps}`,
+    ],
   });
 }
 

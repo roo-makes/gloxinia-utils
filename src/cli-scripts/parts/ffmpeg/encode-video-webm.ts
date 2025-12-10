@@ -1,43 +1,46 @@
 import { Observable } from "rxjs";
-import ffmpegCommand from "fluent-ffmpeg";
 import path from "path";
-import fsExtra from "fs-extra";
 import { EncodeVideoOptions } from "../../types/common";
-import { attachFfmpegLogging } from "../../utils/attach-ffmpeg-logging";
-
-type EncodeVideoOptionsWebm = EncodeVideoOptions & {
-  crf: number;
-  bitrate: number;
-};
+import { runFfmpegObservable } from "./run-ffmpeg-observable";
 
 function encodeVideoWebm({
   input,
   output,
   fps,
-  crf,
-  bitrate,
+  qualitySettings,
   height,
   width,
-}: EncodeVideoOptionsWebm): Observable<string> {
-  fsExtra.ensureDirSync(path.dirname(output));
+}: EncodeVideoOptions): Observable<string> {
+  const args = [
+    "-an", // Remove audio (correct FFmpeg option)
+    "-r",
+    `${fps}`, // Output frame rate
+    "-filter:v",
+    `scale=${width}:${height}`, // Scale video to target dimensions
+    "-c:v",
+    "libvpx", // Use libvpx codec (VP8/VP9) for WebM
+    "-pix_fmt",
+    "yuva420p", // Pixel format with alpha channel (YUVA = YUV + Alpha)
+    "-auto-alt-ref",
+    "0", // Disable alternate reference frames (can help with alpha)
+    "-threads",
+    "4", // Use 4 encoding threads
+    "-quality",
+    "good", // Quality preset: good balance of speed/quality
+    "-cpu-used",
+    "0", // Encoding speed (0 = slowest but best quality)
+  ];
 
-  return new Observable<string>((subscriber) => {
-    const ffmpegBuiltCommand = ffmpegCommand(path.resolve(input))
-      .noAudio()
-      .videoCodec("libvpx")
-      .outputFPS(fps)
-      .size(`${width}x${height}`)
-      .videoBitrate(bitrate)
-      .outputOption(`-pix_fmt yuva420p`)
-      .outputOption(`-crf ${crf}`)
-      .outputOption("-auto-alt-ref 0")
-      .outputOption("-threads 4")
-      .outputOption("-quality good")
-      .outputOption("-cpu-used 0");
+  // Add quality settings if provided
+  if (qualitySettings) {
+    args.push("-b:v", `${qualitySettings.bitrate}k`); // Video bitrate
+    args.push("-crf", `${qualitySettings.crf}`); // Constant Rate Factor (quality)
+  }
 
-    attachFfmpegLogging(ffmpegBuiltCommand, subscriber);
-
-    ffmpegBuiltCommand.save(output);
+  return runFfmpegObservable({
+    inputPath: path.resolve(input),
+    outputPath: output,
+    args,
   });
 }
 
