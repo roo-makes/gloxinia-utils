@@ -1,9 +1,11 @@
-import { ffprobe } from "fluent-ffmpeg";
+import ffprobe from "ffprobe";
 import { VideoInfo } from "../types/common";
+
+export const FFPROBE_COMMAND = "ffprobe";
 
 const getSourceVideoInfo = (inputPath: string): Promise<VideoInfo> => {
   return new Promise((resolve, reject) => {
-    ffprobe(inputPath, (err, metadata) => {
+    ffprobe(inputPath, { path: FFPROBE_COMMAND }, (err, metadata) => {
       if (err) {
         reject(err);
         return;
@@ -43,15 +45,13 @@ const getSourceVideoInfo = (inputPath: string): Promise<VideoInfo> => {
         return;
       }
 
-      const duration = parseInt(stream.nb_frames);
-
       resolve({
         size: {
           width: stream.width,
           height: stream.height,
         },
         fps,
-        duration,
+        duration: stream.nb_frames,
       });
     });
   });
