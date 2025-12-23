@@ -6,17 +6,25 @@ import { fileExistsAndIsNewerSync } from "../utils/file-exists-and-is-newer";
 import { getOutputPath } from "../utils/get-output-path";
 import encodeVideoHap from "./ffmpeg/encode-video-hap";
 import encodeVideoWebm from "./ffmpeg/encode-video-webm";
+import { getSizesForInputFile } from "./get-sizes-for-input-file";
 import getSizesForRatio from "./get-sizes-for-ratio";
 import getSourceVideoInfo from "./get-source-video-info";
 import getVideoParamsMatrix from "./get-video-params-matrix";
 
 type EncodeVideosOptions = {
+  /** Input filepaths to encode. They are expected to be relative to inputBasePath. */
   inputFiles: string[];
+  /** The root path for the input files. Output relative paths will be derived from the difference between input and inputBasePath. */
   inputBasePath: string;
+  /** The root path for the output files. Output filepaths will be relative to this path. */
   outputBasePath: string;
+  /** The format to encode the videos to. */
   outputFormat: OutputVideoFormat;
+  /** The frames per second to encode the videos to. */
   fpses: number[];
+  /** The CRF value to encode the videos to. */
   crfs?: number[];
+  /** The sizes to encode the videos to. */
   sizes?: Size[];
 };
 
@@ -54,15 +62,24 @@ export const encodeVideos = async (options: EncodeVideosOptions) => {
 
   const tasks = await Promise.all(
     inputFiles.map(async (inputPath) => {
-      const { fps, duration, size } = await getSourceVideoInfo(inputPath);
+      const videoInfo = await getSourceVideoInfo(inputPath);
+      const { fps, duration } = videoInfo;
 
-      const ratio = size.width / size.height;
-      const sizesForRatio = getSizesForRatio(ratio);
+      const sizesForInputFile = await getSizesForInputFile(
+        inputPath,
+        videoInfo
+      );
+      if (sizesForInputFile.length === 0) {
+        console.error(
+          `No sizes found for ${inputPath}, ensure the input path matches a substring in the sizes.ts file`
+        );
+        return;
+      }
 
       const paramsMatrix = getVideoParamsMatrix({
         crfs,
         fpses,
-        sizes: sizes || sizesForRatio,
+        sizes: sizes || sizesForInputFile,
       });
 
       const encoder = encoderForFormat[outputFormat];
@@ -113,8 +130,10 @@ export const encodeVideos = async (options: EncodeVideosOptions) => {
         return [listrTask];
       });
 
+      const inputFilename = path.basename(inputPath);
+
       return {
-        title: `Encoding videos for ${inputPath}`,
+        title: `Encoding videos for ${inputFilename}`,
         task: (ctx: any, task: any): Listr => task.newListr(videoTasks),
       };
     })
