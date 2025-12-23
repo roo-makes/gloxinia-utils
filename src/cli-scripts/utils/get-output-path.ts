@@ -28,6 +28,7 @@ export const getOutputPath = ({
     removeStartingSlash(inputPathAfterBase)
   );
 
+  // Generate the output filename by joining the input filename with the extras (used for stats)
   const outputFilename =
     [inputParts.name, ...(outputFilenameExtras || []).filter(Boolean)].join(
       "-"
