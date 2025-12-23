@@ -21,17 +21,23 @@ const getFilesRecursive = async (
   return files;
 };
 
-export default async (
-  inputArr: string[],
+const getStringArrayFromInputArg = (inputArg: any): string[] => {
+  return Array.isArray(inputArg) ? inputArg : [inputArg];
+};
+
+export const gatherSourceFiles = async (
+  inputArg: any,
   inputExts: string[] = ["mov", "mp4", "webm"],
   recursive = false
 ) => {
+  const inputArray = getStringArrayFromInputArg(inputArg);
+
   if (recursive) {
-    return getFilesRecursive(inputArr, inputExts);
+    return getFilesRecursive(inputArray, inputExts);
   }
 
   const inputSet = new Set(
-    inputArr.flatMap((entry) => {
+    inputArray.flatMap((entry) => {
       return glob.sync(entry);
     })
   );
