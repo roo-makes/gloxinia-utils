@@ -5,3 +5,12 @@ export const getIntArrayFromStringList = (input: string): number[] => {
     return intVal;
   });
 };
+
+export const validateIntArray = (input: string): boolean | string => {
+  try {
+    getIntArrayFromStringList(input);
+    return true;
+  } catch (e) {
+    return String(e);
+  }
+};
