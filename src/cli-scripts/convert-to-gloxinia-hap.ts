@@ -1,36 +1,32 @@
-import { program } from "commander";
-import prompts, { PromptObject } from "prompts";
+import prompts from "prompts";
+import { getInputBasePath } from "./utils/get-input-base-path";
 import { encodeVideos } from "./parts/encode-videos";
-import gatherSourceFiles from "./parts/gather-source-files";
-import getSizesForRatio from "./parts/get-sizes-for-ratio";
-import getSourceVideoInfo from "./parts/get-source-video-info";
+import { gatherSourceFiles } from "./parts/gather-source-files";
+import {
+  validateIntArray,
+  getIntArrayFromStringList,
+} from "./utils/get-int-array-from-string-list";
 import { setupProgram } from "./utils/setup-program";
-
-const getIntArrayFromStringList = (input: string): number[] => {
-  return input.split(",").map((part) => {
-    const intVal = parseInt(part);
-    if (isNaN(intVal)) throw `Error: "${part}" is not a number`;
-    return intVal;
-  });
-};
-
-const validateIntArray = (input: string): boolean | string => {
-  try {
-    getIntArrayFromStringList(input);
-    return true;
-  } catch (e) {
-    return String(e);
-  }
-};
 
 (async () => {
   const program = setupProgram();
   const options = program.opts();
-  const inputFiles = await gatherSourceFiles(options.input, ["mov"], options.r);
 
-  console.log(`Found ${inputFiles.length} input videos`);
+  const inputFiles = await gatherSourceFiles(
+    options.input,
+    ["mov"],
+    Boolean(options.recursive)
+  );
+  const inputBasePath = options.inputBasePath
+    ? String(options.inputBasePath)
+    : getInputBasePath(options.input);
 
-  const videoInfo = await getSourceVideoInfo(inputFiles[0]);
+  if (inputFiles.length === 0) {
+    console.error("No input files found");
+    process.exit(1);
+  } else {
+    console.log(`Found ${inputFiles.length} input videos`);
+  }
 
   const response = await prompts([
     {
@@ -41,28 +37,12 @@ const validateIntArray = (input: string): boolean | string => {
       validate: validateIntArray,
       format: getIntArrayFromStringList,
     },
-    // {
-    //   type: "multiselect",
-    //   message: "Select output sizes (spacebar to toggle)",
-    //   instructions: false,
-    //   name: "sizes",
-    //   choices: getSizesForRatio(
-    //     videoInfo.size.width / videoInfo.size.height
-    //   ).map((size) => {
-    //     return {
-    //       title: `${size.width} x ${size.height}`,
-    //       value: size,
-    //       selected: true,
-    //     };
-    //   }),
-    //   min: 1,
-    // },
   ]);
 
   await encodeVideos({
-    inputFiles: inputFiles,
+    inputFiles,
+    inputBasePath,
     outputBasePath: options.output,
-    inputBasePath: options.input,
     outputFormat: "hap",
     fpses: response.fps,
   });
