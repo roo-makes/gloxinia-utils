@@ -1,86 +1,33 @@
-import prompts, { PromptObject } from "prompts";
-import { getIntArrayFromStringList } from "./utils/get-int-array-from-string-list";
-import gatherSourceFiles from "./parts/gather-source-files";
-import getSizesForRatio from "./parts/get-sizes-for-ratio";
-import getSourceVideoInfo from "./parts/get-source-video-info";
+import prompts from "prompts";
+import {
+  getIntArrayFromStringList,
+  validateIntArray,
+} from "./utils/get-int-array-from-string-list";
+import { gatherSourceFiles } from "./parts/gather-source-files";
 import { setupProgram } from "./utils/setup-program";
-import { VideoInfo } from "./types/common";
 import { encodeVideos } from "./parts/encode-videos";
-
-type ResponseType = {
-  crf: number[];
-  fps: number[];
-};
-
-type VideoPathWithInfo = {
-  path: string;
-  videoInfo: VideoInfo;
-};
-
-const validateIntArray = (input: string): boolean | string => {
-  try {
-    getIntArrayFromStringList(input);
-    return true;
-  } catch (e) {
-    return String(e);
-  }
-};
-
-const getFileToVideoInfoMap = async (inputFiles: string[]) => {
-  const fileToVideoInfoMap = new Map<string, VideoInfo>();
-  for (const inputFile of inputFiles) {
-    const videoInfo = await getSourceVideoInfo(inputFile);
-    fileToVideoInfoMap.set(inputFile, videoInfo);
-  }
-  return fileToVideoInfoMap;
-};
-
-const getRatioToFilesMap = async (
-  fileToVideoInfoMap: Map<string, VideoInfo>
-) => {
-  const ratioToFilesMap = new Map<number, VideoPathWithInfo[]>();
-
-  for (const [path, videoInfo] of fileToVideoInfoMap.entries()) {
-    const ratio = videoInfo.size.width / videoInfo.size.height;
-    if (!ratioToFilesMap.has(ratio)) {
-      ratioToFilesMap.set(ratio, []);
-    }
-    ratioToFilesMap.get(ratio)?.push({ path, videoInfo });
-  }
-
-  return ratioToFilesMap;
-};
+import { getInputBasePath } from "./utils/get-input-base-path";
 
 (async () => {
   const program = setupProgram();
   const options = program.opts();
-  console.log("Scanning input directory...");
-  const inputFiles = await gatherSourceFiles(options.input, ["mov"], options.r);
-  console.log(`Found ${inputFiles.length} input videos`);
-  console.log("Reading video files...");
-  const fileToVideoInfoMap = await getFileToVideoInfoMap(inputFiles);
-  const ratioToFilesMap = await getRatioToFilesMap(fileToVideoInfoMap);
+  const inputFiles = await gatherSourceFiles(
+    options.input,
+    ["mov"],
+    Boolean(options.recursive)
+  );
+  const inputBasePath = options.inputBasePath
+    ? String(options.inputBasePath)
+    : getInputBasePath(options.input);
 
-  const ratioPrompts: PromptObject<string>[] = Array.from(
-    ratioToFilesMap.keys()
-  ).map((ratio) => {
-    return {
-      type: "multiselect",
-      message: `Select output sizes for videos with ratio ${ratio} (spacebar to toggle)`,
-      instructions: false,
-      name: String(ratio),
-      choices: getSizesForRatio(ratio).map((size) => {
-        return {
-          title: `${size.width} x ${size.height}`,
-          value: size,
-          selected: true,
-        };
-      }),
-      min: 1,
-    };
-  });
+  if (inputFiles.length === 0) {
+    console.error("No input files found");
+    process.exit(1);
+  } else {
+    console.log(`Found ${inputFiles.length} input videos`);
+  }
 
-  const response: ResponseType = await prompts([
+  const response = await prompts([
     {
       type: "text",
       name: "crf",
@@ -99,23 +46,12 @@ const getRatioToFilesMap = async (
     },
   ]);
 
-  const resolutionsByRatio = await prompts(ratioPrompts);
-
-  for (const [ratio, files] of ratioToFilesMap.entries()) {
-    const sizes = resolutionsByRatio[ratio];
-    if (!sizes) {
-      console.log(`No sizes selected for ratio ${ratio}`);
-      continue;
-    }
-    console.log(`Encoding ${files.length} videos with ratio ${ratio}`);
-    await encodeVideos({
-      inputFiles: files.map(({ path }) => path),
-      inputBasePath: options.input[0],
-      outputBasePath: options.output,
-      crfs: response.crf,
-      fpses: response.fps,
-      sizes,
-      outputFormat: "webm",
-    });
-  }
+  await encodeVideos({
+    inputFiles,
+    inputBasePath,
+    outputBasePath: options.output,
+    outputFormat: "webm",
+    fpses: response.fps,
+    crfs: response.crf,
+  });
 })();
