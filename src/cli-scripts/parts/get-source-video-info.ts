@@ -51,7 +51,7 @@ const getSourceVideoInfo = (inputPath: string): Promise<VideoInfo> => {
           height: stream.height,
         },
         fps,
-        duration: stream.nb_frames,
+        duration: Number(stream.nb_frames),
       });
     });
   });
