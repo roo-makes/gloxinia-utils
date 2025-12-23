@@ -1,12 +1,16 @@
-import { program } from "commander";
+import { Command } from "commander";
 
-export const setupProgram = () => {
+export const setupProgram = (): Command => {
+  const program = new Command();
   program
-    .requiredOption("-i, --input <inputs...>", "input file or directory")
-    .requiredOption("-o, --output <output>", "output directory")
-    .option("-r", "--recursive <recursive>", false);
+    .requiredOption("-i, --input <inputs...>", "input file or directory(s)")
+    .requiredOption("-o, --output <output>", "output base directory")
+    .option("--inputBasePath <inputBasePath>", "input base directory")
+    .option("-r, --recursive", "recursively search for input files", false);
 
   program.parse(process.argv);
+
+  program.showHelpAfterError(true);
 
   return program;
 };
