@@ -1,6 +1,19 @@
 import { Subscriber } from "rxjs";
 
 function isFfmpegError(line: string): boolean {
+  // FFmpeg informational lines that contain "unknown" but aren't errors
+  const informationalPatterns = [
+    /muxing overhead: unknown/i,
+    /Unknown AVPixelFormat/i,
+    /Unknown AVSampleFormat/i,
+  ];
+
+  // Skip informational lines
+  if (informationalPatterns.some((pattern) => pattern.test(line))) {
+    return false;
+  }
+
+  // Actual error patterns
   const errorKeywords = [
     "Error",
     "error",
@@ -8,12 +21,14 @@ function isFfmpegError(line: string): boolean {
     "Failed",
     "Invalid",
     "invalid",
-    "Unknown",
-    "unknown",
     "No such file",
     "Permission denied",
     "Unrecognized option",
     "Error splitting",
+    "Cannot",
+    "cannot",
+    "impossible",
+    "Impossible",
   ];
   return errorKeywords.some((keyword) => line.includes(keyword));
 }
