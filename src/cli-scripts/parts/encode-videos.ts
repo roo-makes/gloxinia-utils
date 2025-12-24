@@ -7,7 +7,6 @@ import { getOutputPath } from "../utils/get-output-path";
 import encodeVideoHap from "./ffmpeg/encode-video-hap";
 import encodeVideoWebm from "./ffmpeg/encode-video-webm";
 import { getSizesForInputFile } from "./get-sizes-for-input-file";
-import getSizesForRatio from "./get-sizes-for-ratio";
 import getSourceVideoInfo from "./get-source-video-info";
 import getVideoParamsMatrix from "./get-video-params-matrix";
 
@@ -73,7 +72,10 @@ export const encodeVideos = async (options: EncodeVideosOptions) => {
         console.error(
           `No sizes found for ${inputPath}, ensure the input path matches a substring in the sizes.ts file`
         );
-        return;
+        return {
+          title: `Skipping ${inputPath} -- no sizes found.`,
+          task: () => Promise.resolve(),
+        };
       }
 
       const paramsMatrix = getVideoParamsMatrix({
