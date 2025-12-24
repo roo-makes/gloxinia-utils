@@ -1,53 +1,43 @@
-import { program } from "commander";
-import prompts, { PromptObject } from "prompts";
-import path from "path";
-import encodeImageSequences from "./parts/encode-image-sequences";
-import gatherSourceFiles from "./parts/gather-source-files";
-import getSizesForRatio from "./parts/get-sizes-for-ratio";
-import getSourceVideoInfo from "./parts/get-source-video-info";
-
-const setupProgram = () => {
-  program
-    .requiredOption("-i, --input <inputs...>", "input file or directory")
-    .option("-o, --output <output>", "output directory");
-
-  program.parse(process.argv);
-
-  return program;
-};
+import { gatherSourceFiles } from "./parts/gather-source-files";
+import { encodeImageSequences } from "./parts/encode-image-sequences";
+import { setupProgram } from "./utils/setup-program";
+import { runPromptsWithConfirm } from "./utils/run-prompts-with-confirm";
+import { encodeImagePlaceholders } from "./parts/encode-image-placeholders";
 
 (async () => {
-  const program = setupProgram();
-  const options = program.opts();
-  const inputFiles = await gatherSourceFiles(options.input);
-
-  console.log(`Found ${inputFiles.length} input videos`);
-  if (inputFiles.length === 0) return;
-
-  const videoInfo = await getSourceVideoInfo(inputFiles[0]);
-
-  const response = await prompts([
-    {
-      type: "multiselect",
-      message: "Select output sizes (spacebar to toggle)",
-      instructions: false,
-      name: "sizes",
-      choices: getSizesForRatio(
-        videoInfo.size.width / videoInfo.size.height
-      ).map((size) => {
-        return {
-          title: `${size.width} x ${size.height}`,
-          value: size,
-          selected: true,
-        };
-      }),
-      min: 1,
-    },
-  ]);
-
-  await encodeImageSequences({
-    inputFiles,
-    outputPath: options.output,
-    sizes: response.sizes,
+  const program = setupProgram((program) => {
+    program.option("--placeholders", "Extract placeholders only");
   });
+  const options = program.opts();
+  const inputBasePath = options.inputBasePath
+    ? String(options.inputBasePath)
+    : "";
+  const inputFiles = await gatherSourceFiles({
+    inputArg: options.input,
+    inputExts: ["mov"],
+    inputBasePath,
+  });
+
+  if (inputFiles.length === 0) {
+    console.error("No input files found");
+    process.exit(1);
+  } else {
+    console.log(`Found ${inputFiles.length} input videos`);
+  }
+
+  await runPromptsWithConfirm();
+
+  if (options.placeholders) {
+    await encodeImagePlaceholders({
+      inputFiles,
+      inputBasePath,
+      outputBasePath: options.output,
+    });
+  } else {
+    await encodeImageSequences({
+      inputFiles,
+      inputBasePath,
+      outputBasePath: options.output,
+    });
+  }
 })();

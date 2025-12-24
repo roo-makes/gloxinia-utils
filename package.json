@@ -7,6 +7,7 @@
     "test": "jest",
     "convert-to-webm": "tsx src/cli-scripts/convert-to-gloxinia-webm.ts",
     "convert-to-images": "tsx src/cli-scripts/convert-to-gloxinia-images.ts",
+    "convert-to-placeholders": "tsx src/cli-scripts/convert-to-gloxinia-images.ts --placeholders",
     "convert-to-ogg": "tsx src/cli-scripts/convert-to-ogg.ts",
     "convert-to-hap": "tsx src/cli-scripts/convert-to-gloxinia-hap.ts",
     "deploy-to-deck": "tsx src/cli-scripts/deploy-to-deck.ts"
