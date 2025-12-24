@@ -1,12 +1,12 @@
 import { statSync } from "fs-extra";
 import path from "path";
+import { globSync } from "glob";
 
 export const getInputBasePath = (input: string[]) => {
-  // If input is a directory, return the directory
-  // If input is a file, return the directory of the file
-  if (statSync(input[0]).isDirectory()) {
-    return input[0].replace(/\/$/, "");
-  } else {
-    return path.dirname(input[0]).replace(/\/$/, "");
-  }
+  const files = globSync(input);
+  const basePaths = files.map((file) => path.dirname(file).replace(/\/$/, ""));
+
+  console.log("basePaths", basePaths);
+
+  return basePaths[0];
 };

@@ -1,5 +1,3 @@
-import prompts from "prompts";
-import { getInputBasePath } from "./utils/get-input-base-path";
 import { encodeVideos } from "./parts/encode-videos";
 import { gatherSourceFiles } from "./parts/gather-source-files";
 import {
@@ -7,19 +5,19 @@ import {
   getIntArrayFromStringList,
 } from "./utils/get-int-array-from-string-list";
 import { setupProgram } from "./utils/setup-program";
+import { runPromptsWithConfirm } from "./utils/run-prompts-with-confirm";
 
 (async () => {
   const program = setupProgram();
   const options = program.opts();
-
-  const inputFiles = await gatherSourceFiles(
-    options.input,
-    ["mov"],
-    Boolean(options.recursive)
-  );
   const inputBasePath = options.inputBasePath
     ? String(options.inputBasePath)
-    : getInputBasePath(options.input);
+    : "";
+  const inputFiles = await gatherSourceFiles({
+    inputArg: options.input,
+    inputExts: ["mov"],
+    inputBasePath,
+  });
 
   if (inputFiles.length === 0) {
     console.error("No input files found");
@@ -28,7 +26,7 @@ import { setupProgram } from "./utils/setup-program";
     console.log(`Found ${inputFiles.length} input videos`);
   }
 
-  const response = await prompts([
+  const response = await runPromptsWithConfirm([
     {
       type: "text",
       name: "fps",

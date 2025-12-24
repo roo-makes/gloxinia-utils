@@ -5,8 +5,7 @@ export const setupProgram = (): Command => {
   program
     .requiredOption("-i, --input <inputs...>", "input file or directory(s)")
     .requiredOption("-o, --output <output>", "output base directory")
-    .option("--inputBasePath <inputBasePath>", "input base directory")
-    .option("-r, --recursive", "recursively search for input files", false);
+    .option("--inputBasePath <inputBasePath>", "input base directory");
 
   program.parse(process.argv);
 
