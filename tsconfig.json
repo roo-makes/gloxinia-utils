@@ -1,5 +1,6 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
-
-  "include": ["src/**/*"]
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "include": [
+    "src/**/*"
+  ]
 }
