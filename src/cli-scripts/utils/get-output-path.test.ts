@@ -193,5 +193,19 @@ describe("getOutputPath", () => {
       expect(result.outputDir).toContain("subdir");
       expect(result.outputFilename).toBe("file.webm");
     });
+
+    test("should handle without outputExtension", () => {
+      const result = getOutputPath({
+        inputPath: "/path/to/input/subdir/file-test.mov",
+        inputBasePath: "/path/to/input",
+        outputBasePath: "/path/to/output",
+        outputFilenameExtras: ["extra"],
+      });
+
+      expect(result.outputFilename).toBe("file-test-extra");
+      expect(result.outputPath).toBe(
+        path.resolve("/path/to/output/subdir/file-test-extra")
+      );
+    });
   });
 });

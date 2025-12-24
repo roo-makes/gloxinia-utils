@@ -5,7 +5,7 @@ type GetOutputPathOptions = {
   inputBasePath: string;
   outputBasePath: string;
   outputFilenameExtras?: string[];
-  outputExtension: string;
+  outputExtension?: string;
 };
 
 const removeStartingSlash = (path: string) =>
@@ -32,7 +32,7 @@ export const getOutputPath = ({
   const outputFilename =
     [inputParts.name, ...(outputFilenameExtras || []).filter(Boolean)].join(
       "-"
-    ) + `.${outputExtension}`;
+    ) + (outputExtension ? `.${outputExtension}` : "");
 
   const outputPath = path.resolve(outputDir, `${outputFilename}`);
 
