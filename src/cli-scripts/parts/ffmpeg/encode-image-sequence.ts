@@ -5,31 +5,63 @@ import { runFfmpegObservable } from "./run-ffmpeg-observable";
 
 interface EncodeImageSequenceOptions {
   input: string;
-  output: string;
-  outputPrefix: string;
+  outputDir: string;
+  outputPrefix?: string;
+  includeFrameNumbers?: boolean;
+  frameIndex?: number;
   size: Size;
 }
 
-function encodeImageSequence({
+export const encodeImageSequence = ({
   input,
-  output,
-  outputPrefix,
+  outputDir,
+  outputPrefix = "output",
+  includeFrameNumbers = true,
+  frameIndex,
   size,
-}: EncodeImageSequenceOptions): Observable<string> {
-  // Generate output path with frame number pattern
-  // %04d means 4-digit zero-padded numbers (0001, 0002, etc.)
-  const outputPath = path.resolve(output, `./${outputPrefix}-f%04d.png`);
+}: EncodeImageSequenceOptions): Observable<string> => {
+  const filenameParts = [];
+  if (outputPrefix) {
+    filenameParts.push(outputPrefix);
+  }
+  if (includeFrameNumbers) {
+    filenameParts.push("%04d");
+  }
+
+  const outputPath = path.resolve(
+    outputDir,
+    `./${filenameParts.join("-")}.png`
+  );
+
+  const filterParts = [];
+
+  // Determine if we're outputting a single frame
+  const isSingleFrame = frameIndex !== undefined || !includeFrameNumbers;
+
+  // If frameIndex is specified, select only that frame
+  // If includeFrameNumbers is false, extract the first frame (frame 0)
+  if (isSingleFrame) {
+    const frameToExtract = frameIndex ?? 0;
+    filterParts.push(`select=eq(n\\,${frameToExtract})`);
+  }
+
+  // Always scale to target dimensions
+  filterParts.push(`scale=${size.width}:${size.height}`);
+
+  const args = [
+    "-an", // Remove audio (not needed for image sequences)
+    "-filter:v",
+    filterParts.join(","),
+  ];
+
+  // If outputting a single frame, limit to 1 frame and add -update flag
+  if (isSingleFrame) {
+    args.push("-vframes", "1", "-update", "1");
+  }
 
   return runFfmpegObservable({
     inputPath: path.resolve(input),
     outputPath: outputPath,
-    args: [
-      "-an", // Remove audio (not needed for image sequences)
-      "-filter:v",
-      `scale=${size.width}:${size.height}`, // Scale to target dimensions
-      // PNG format is automatically detected from .png extension
-    ],
+    args: args,
   });
-}
-
-export default encodeImageSequence;
+};
