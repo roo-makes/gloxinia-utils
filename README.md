@@ -50,6 +50,10 @@ yarn convert-to-images --inputBasePath ../gloxinia-nongit/gloxinia-ready/hap -i 
 
 Converts only the first frame in each input video. Useful for outputting a single iamge to represent the video. This is used in DancerMovesets as the image to show in the editor.
 
+```bash
+yarn convert-to-placeholders --inputBasePath ../gloxinia-nongit/gloxinia-ready/hap -i "**/*-idle.mov" -o ../gloxinia-nongit/gloxinia-placeholders
+```
+
 ### Convert to Ogg
 
 Script to convert any audio files into `ogg`, which is the preferred format for use in Unity.
