@@ -38,7 +38,7 @@ export const WIDTHS_BY_SUBSTRING: SizesConfig = {
 
   // Highway Driving
   "highway-drivingfront": [960],
-  "highway-drivingfront-bothhands": [1280, 960],
+  "highway-drivingfront-idle": [1280, 960],
   "highway-drivingfront-honk": [1280, 960],
   "highway-drivingleft": [960],
   "highway-backdrop": [1920],
