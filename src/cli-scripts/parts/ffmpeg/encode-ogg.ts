@@ -10,7 +10,7 @@ const encodeOgg = ({ input, output }: EncodeOggOptions) => {
   return runFfmpegObservable({
     inputPath: path.resolve(input),
     outputPath: output,
-    args: ["-an", "-c:a", "libvorbis"],
+    args: ["-vn", "-c:a", "libvorbis"],
   });
 };
 

@@ -1,33 +1,33 @@
 import prompts, { PromptObject } from "prompts";
-import gatherSourceFiles from "./parts/gather-source-files";
+import { gatherSourceFiles } from "./parts/gather-source-files";
 import encodeOggs from "./parts/encode-oggs";
 import { setupProgram } from "./utils/setup-program";
-
-const questions: PromptObject[] = [
-  {
-    type: "confirm",
-    name: "confirm",
-    message: "Start Conversion?",
-    initial: true,
-  },
-];
+import { runPromptsWithConfirm } from "./utils/run-prompts-with-confirm";
 
 (async () => {
   const program = setupProgram();
   const options = program.opts();
-  const inputFiles = await gatherSourceFiles(
-    options.input,
-    ["mp3", "wav", "m4a", "ogg"],
-    options.r
-  );
+  const inputBasePath = options.inputBasePath
+    ? String(options.inputBasePath)
+    : "";
+  const inputFiles = await gatherSourceFiles({
+    inputArg: options.input,
+    inputExts: ["mp3", "wav", "m4a", "ogg"],
+    inputBasePath,
+  });
 
-  console.log(`Found ${inputFiles.length} input audio files.`);
+  if (inputFiles.length === 0) {
+    console.error("No input files found");
+    process.exit(1);
+  } else {
+    console.log(`Found ${inputFiles.length} input videos`);
+  }
 
-  await prompts(questions);
+  await runPromptsWithConfirm();
 
   await encodeOggs({
     inputFiles,
-    inputBasePath: options.input[0],
-    outputPath: options.output,
+    inputBasePath,
+    outputBasePath: options.output.trim(),
   });
 })();
