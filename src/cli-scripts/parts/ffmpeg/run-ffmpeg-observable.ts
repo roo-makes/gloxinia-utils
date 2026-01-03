@@ -29,7 +29,7 @@ export const runFfmpegObservable = ({
   fsExtra.ensureDirSync(path.dirname(resolvedOutputPath));
 
   return new Observable<string>((subscriber) => {
-    const spawnArgs = ["-i", inputPath, ...args, resolvedOutputPath];
+    const spawnArgs = ["-y", "-i", inputPath, ...args, resolvedOutputPath];
     const ffmpegProcess = childProcess.spawn(ffmpegPath, spawnArgs);
 
     subscriber.next("Starting encoding...");
