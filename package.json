@@ -6,11 +6,13 @@
   "scripts": {
     "test": "jest",
     "convert-to-webm": "tsx src/cli-scripts/convert-to-gloxinia-webm.ts",
+    "convert-to-webm-noalpha": "tsx src/cli-scripts/convert-to-gloxinia-webm.ts --no-alpha",
     "convert-to-images": "tsx src/cli-scripts/convert-to-gloxinia-images.ts",
     "convert-to-placeholders": "tsx src/cli-scripts/convert-to-gloxinia-images.ts --placeholders",
     "convert-to-ogg": "tsx src/cli-scripts/convert-to-ogg.ts",
     "convert-to-hap": "tsx src/cli-scripts/convert-to-gloxinia-hap.ts",
-    "deploy-to-deck": "tsx src/cli-scripts/deploy-to-deck.ts"
+    "deploy-to-deck": "tsx src/cli-scripts/deploy-to-deck.ts",
+    "deploy-to-macmini": "tsx src/cli-scripts/deploy-to-macmini.ts -d"
   },
   "author": "",
   "license": "ISC",
@@ -23,10 +25,13 @@
     "fs-extra": "^11.1.0",
     "glob": "^13.0.0",
     "listr2": "^9.0.5",
+    "node-ssh": "^13.2.1",
     "prompts": "^2.4.2",
     "rsync": "^0.6.1",
     "rxjs": "^7.8.1",
-    "tmp-promise": "^3.0.3"
+    "ssh-config": "^5.0.4",
+    "tmp-promise": "^3.0.3",
+    "zip-a-folder": "^4.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

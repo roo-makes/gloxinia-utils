@@ -6,6 +6,7 @@ import { fileExistsAndIsNewerSync } from "../utils/file-exists-and-is-newer";
 import { getOutputPath } from "../utils/get-output-path";
 import encodeVideoHap from "./ffmpeg/encode-video-hap";
 import encodeVideoWebm from "./ffmpeg/encode-video-webm";
+import { encodeVideoWebmNoAlpha } from "./ffmpeg/encode-video-webm-noalpha";
 import { getSizesForInputFile } from "./get-sizes-for-input-file";
 import getSourceVideoInfo from "./get-source-video-info";
 import getVideoParamsMatrix from "./get-video-params-matrix";
@@ -32,11 +33,13 @@ const encoderForFormat: Record<
   (options: EncodeVideoOptions) => Observable<string>
 > = {
   webm: encodeVideoWebm,
+  webmNoAlpha: encodeVideoWebmNoAlpha,
   hap: encodeVideoHap,
 };
 
 const outputExtensionForFormat: Record<OutputVideoFormat, string> = {
   webm: "webm",
+  webmNoAlpha: "webm",
   hap: "mov",
 };
 
@@ -49,6 +52,7 @@ const adjustDurationForFps = (
 };
 
 export const encodeVideos = async (options: EncodeVideosOptions) => {
+  console.log(options);
   const {
     inputFiles,
     outputBasePath,
@@ -78,11 +82,14 @@ export const encodeVideos = async (options: EncodeVideosOptions) => {
         };
       }
 
-      const paramsMatrix = getVideoParamsMatrix({
-        crfs,
-        fpses,
-        sizes: sizes || sizesForInputFile,
-      });
+      const paramsMatrix = getVideoParamsMatrix(
+        {
+          crfs,
+          fpses,
+          sizes: sizes || sizesForInputFile,
+        },
+        outputFormat
+      );
 
       const encoder = encoderForFormat[outputFormat];
 
