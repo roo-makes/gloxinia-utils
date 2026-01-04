@@ -9,7 +9,7 @@ export type VideoInfo = {
   duration: number;
 };
 
-export type OutputVideoFormat = "webm" | "hap";
+export type OutputVideoFormat = "webm" | "webmNoAlpha" | "hap";
 
 export type QualitySettings = {
   crf: number;

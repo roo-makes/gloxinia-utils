@@ -1,4 +1,4 @@
-import { Size } from "../types/common";
+import { OutputVideoFormat, Size } from "../types/common";
 import defaults from "../config/defaults";
 
 interface GetVideoParamsMatrixOptions {
@@ -8,11 +8,16 @@ interface GetVideoParamsMatrixOptions {
   sizes?: Size[];
 }
 
-const getVideoParamsMatrix = (options: GetVideoParamsMatrixOptions) => {
+const getVideoParamsMatrix = (
+  options: GetVideoParamsMatrixOptions,
+  format: OutputVideoFormat
+) => {
+  const defaultsForFormat = defaults[format];
+
   const {
-    crfs = [defaults.crf],
-    bitrates = [defaults.bitrate],
-    fpses = [defaults.fps],
+    crfs = [defaultsForFormat.crf],
+    bitrates = [defaultsForFormat.bitrate],
+    fpses = [defaultsForFormat.fps],
     sizes = [{ width: 960, height: 960 }],
   } = options;
 

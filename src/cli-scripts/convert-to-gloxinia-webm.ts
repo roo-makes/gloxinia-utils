@@ -8,7 +8,9 @@ import { encodeVideos } from "./parts/encode-videos";
 import { runPromptsWithConfirm } from "./utils/run-prompts-with-confirm";
 
 (async () => {
-  const program = setupProgram();
+  const program = setupProgram((program) => {
+    program.option("--no-alpha", "Encode without alpha channel");
+  });
   const options = program.opts();
   const inputBasePath = options.inputBasePath
     ? String(options.inputBasePath)
@@ -49,7 +51,7 @@ import { runPromptsWithConfirm } from "./utils/run-prompts-with-confirm";
     inputFiles,
     inputBasePath,
     outputBasePath: options.output,
-    outputFormat: "webm",
+    outputFormat: options.alpha ? "webm" : "webmNoAlpha",
     fpses: response.fps,
     crfs: response.crf,
   });
