@@ -243,3 +243,4 @@ const copyBuildToMacmini = async (
 };
 
 deployToMacminiScript();
+// Done
