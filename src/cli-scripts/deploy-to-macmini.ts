@@ -117,7 +117,7 @@ const deployToMacminiScript = async () => {
             },
           });
         }
-        return new Listr(tasks);
+        return new Listr(tasks, { concurrent: true });
       },
     },
   ]);
@@ -188,6 +188,34 @@ const copyBuildToMacmini = async (
     `unzip ${REMOTE_TMP_DIR}/build.zip -d ${REMOTE_TMP_DIR}/build`,
     []
   );
+
+  // Handle existing build - quit if running, then remove
+  onStatus?.("Checking for existing build");
+  const existingAppPath = `${REMOTE_INSTALL_DIR}/${APP_NAME}`;
+  const checkResult = await connection.exec(
+    `test -d "${existingAppPath}" && echo "exists" || echo "not_exists"`,
+    []
+  );
+
+  if (checkResult.includes("exists")) {
+    onStatus?.("Existing build found, quitting if running");
+    // Try to quit the app gracefully, ignore errors if not running
+    await connection.exec(
+      `killall -TERM "${APP_NAME}" 2>/dev/null || true`,
+      []
+    );
+    // Wait a moment for graceful shutdown
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Force kill if still running
+    await connection.exec(
+      `killall -KILL "${APP_NAME}" 2>/dev/null || true`,
+      []
+    );
+
+    onStatus?.("Removing old build");
+    await connection.exec(`rm -rf "${existingAppPath}"`, []);
+  }
+
   onStatus?.("Moving build to installation directory");
   await connection.exec(
     `mv ${REMOTE_TMP_DIR}/build/${APP_NAME} ${REMOTE_INSTALL_DIR}/${APP_NAME}`,
