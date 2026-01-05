@@ -40,8 +40,6 @@ const obtainBuildPath = async (buildPath?: string) => {
     return buildPath;
   }
 
-  console.log("Getting response");
-
   const response = await prompts(
     [
       {
@@ -65,18 +63,19 @@ const obtainBuildPath = async (buildPath?: string) => {
   );
 
   if (response.buildSource === "cloudfront") {
-    return await downloadToTempDir(MAC_BUILD_URL);
+    return await downloadToTempDir(MAC_BUILD_URL, console.log);
+  }
+
+  if (response.buildSource === "downloads-folder") {
+    return path.join(DOWNLOADS_FOLDER, DOWNLOADED_FILENAME);
+  }
+
+  if (EDITOR_BUILD_PATH.endsWith(".app")) {
+    console.log("Zipping editor build...");
+    return await zipFolder(EDITOR_BUILD_PATH);
   } else {
-    if (response.buildSource === "downloads-folder") {
-      return path.join(DOWNLOADS_FOLDER, DOWNLOADED_FILENAME);
-    }
-    if (EDITOR_BUILD_PATH.endsWith(".app")) {
-      console.log("Zipping editor build...");
-      return await zipFolder(EDITOR_BUILD_PATH);
-    } else {
-      console.log("Using editor build path...");
-      return EDITOR_BUILD_PATH;
-    }
+    console.log("Using editor build path...");
+    return EDITOR_BUILD_PATH;
   }
 };
 
@@ -92,7 +91,6 @@ const deployToMacminiScript = async () => {
   const options = program.opts();
   const destinations = options.destinations as string[];
 
-  console.log(options);
   if (!Array.isArray(destinations) || !destinations.length) {
     console.error("No destination hosts provided");
     process.exit(1);
@@ -133,8 +131,6 @@ const copyBuildToMacmini = async (
   const ssh = new NodeSSH();
   const sshConfig = getSshConfig(destHost);
 
-  console.log("SSH Config", sshConfig);
-
   const connection = await ssh.connect({
     host: sshConfig.Host,
     username: sshConfig.User,
@@ -144,7 +140,7 @@ const copyBuildToMacmini = async (
   if (!connection.isConnected()) {
     throw new Error(`Failed to connect to destination host ${destHost}`);
   }
-  console.log("Connected to destination host", destHost);
+  onStatus?.(`Connected to ${destHost}`);
 
   // Clean up old build and zip
   onStatus?.("Cleaning up old build and zip");
@@ -199,16 +195,25 @@ const copyBuildToMacmini = async (
 
   if (checkResult.includes("exists")) {
     onStatus?.("Existing build found, quitting if running");
-    // Try to quit the app gracefully, ignore errors if not running
+    // Extract process name from app bundle name (remove .app extension)
+    const processName = APP_NAME.replace(/\.app$/, "");
+
+    // Try to quit the app gracefully using osascript (macOS native way)
     await connection.exec(
-      `killall -TERM "${APP_NAME}" 2>/dev/null || true`,
+      `osascript -e 'tell application "${processName}" to quit' 2>/dev/null || true`,
       []
     );
     // Wait a moment for graceful shutdown
     await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // If still running, try killall with process name
+    await connection.exec(`killall "${processName}" 2>/dev/null || true`, []);
+    // Wait a bit more
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Force kill if still running
     await connection.exec(
-      `killall -KILL "${APP_NAME}" 2>/dev/null || true`,
+      `killall -9 "${processName}" 2>/dev/null || true`,
       []
     );
 
@@ -236,11 +241,13 @@ const copyBuildToMacmini = async (
     `rm -rf ${REMOTE_TMP_DIR}/build ${REMOTE_TMP_DIR}/build.zip`,
     []
   );
+
+  onStatus?.("Restarting app");
+  await connection.exec(`open "${REMOTE_INSTALL_DIR}/${APP_NAME}"`, []);
+
   onStatus?.("Build deployed successfully");
 
   await ssh.dispose();
-  console.log("Disconnected from destination host", destHost);
 };
 
 deployToMacminiScript();
-// Done
