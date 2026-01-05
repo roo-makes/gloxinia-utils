@@ -12,7 +12,9 @@
     "convert-to-ogg": "tsx src/cli-scripts/convert-to-ogg.ts",
     "convert-to-hap": "tsx src/cli-scripts/convert-to-gloxinia-hap.ts",
     "deploy-to-deck": "tsx src/cli-scripts/deploy-to-deck.ts",
-    "deploy-to-macmini": "tsx src/cli-scripts/deploy-to-macmini.ts -d"
+    "deploy-to-macmini": "tsx src/cli-scripts/deploy-to-macmini.ts -d",
+    "restart-app-macmini": "tsx src/deploy-scripts/restart-app-macmini.ts -d",
+    "setup-autostart-macmini": "tsx src/deploy-scripts/setup-autostart-macmini.ts -d"
   },
   "author": "",
   "license": "ISC",
