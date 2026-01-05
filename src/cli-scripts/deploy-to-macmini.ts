@@ -8,6 +8,7 @@ import { zipFolder } from "./parts-deploy/zip-unzip";
 import { NodeSSH } from "node-ssh";
 import prompts from "prompts";
 import { getSshConfig } from "./utils/get-ssh-config";
+import path from "path";
 
 const MAC_BUILD_URL =
   "https://d1gmijsvnicp5r.cloudfront.net/roo-makes/gloxinia-v4/branch/master/unitybuild-StandaloneOSX.zip";
@@ -16,6 +17,8 @@ const EDITOR_BUILD_PATH =
 const APP_NAME = "Gloxinia.app";
 const REMOTE_INSTALL_DIR = "/Applications";
 const REMOTE_TMP_DIR = "/tmp/gloxinia-deploy";
+const DOWNLOADS_FOLDER = "/Users/andrew/Downloads";
+const DOWNLOADED_FILENAME = "Unity Build Standalone OSX.zip";
 
 const VALID_BUILD_EXTENSIONS = [".app", ".zip"];
 
@@ -39,36 +42,34 @@ const obtainBuildPath = async (buildPath?: string) => {
 
   console.log("Getting response");
 
-  const response = await prompts([
+  const response = await prompts(
+    [
+      {
+        type: "select",
+        name: "buildSource",
+        message: "Where to get build?",
+        choices: [
+          { title: "Cloudfront", value: "cloudfront" },
+          { title: "Last Editor Build", value: "editor-build" },
+          { title: "Downloads Folder", value: "downloads-folder" },
+        ],
+        initial: 0,
+      },
+    ],
     {
-      type: "select",
-      name: "buildSource",
-      message: "Where to get build?",
-      choices: [
-        { title: "Cloudfront", value: "cloudfront" },
-        { title: "Last Editor Build", value: "editor-build" },
-      ],
-      initial: 0,
-    },
-  ]);
-
-  console.log("Response", response);
+      onCancel: () => {
+        console.log("Build source selection cancelled by user");
+        process.exit(0);
+      },
+    }
+  );
 
   if (response.buildSource === "cloudfront") {
-    const downloadTask = new Listr<{ downloadPath: string }>([
-      {
-        title: "Downloading build from Cloudfront",
-        task: async (ctx, task) => {
-          ctx.downloadPath = await downloadToTempDir(
-            MAC_BUILD_URL,
-            (msg: string) => (task.output = msg)
-          );
-        },
-      },
-    ]);
-    await downloadTask.run();
-    return downloadTask.ctx.downloadPath;
+    return await downloadToTempDir(MAC_BUILD_URL);
   } else {
+    if (response.buildSource === "downloads-folder") {
+      return path.join(DOWNLOADS_FOLDER, DOWNLOADED_FILENAME);
+    }
     if (EDITOR_BUILD_PATH.endsWith(".app")) {
       console.log("Zipping editor build...");
       return await zipFolder(EDITOR_BUILD_PATH);
