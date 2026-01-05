@@ -1,4 +1,5 @@
 import { createWriteStream } from "fs-extra";
+import { Listr, ListrTask } from "listr2";
 import path from "path";
 import { Readable } from "stream";
 import { finished } from "stream/promises";
@@ -10,7 +11,6 @@ type StatusFunction = (msg: string) => void;
 
 const getTempDir = async (): Promise<tmp.DirectoryResult> => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true });
-  console.log("Temp Dir: ", tmpDir.path);
   return tmpDir;
 };
 
@@ -29,24 +29,29 @@ const downloadBuild = async (
 
   const reader = Readable.fromWeb(buildRes.body);
 
-  if (onStatus) {
-    // Const get the progress
-    const downloadSize = buildRes.headers.get("Content-Length");
-    onStatus(`Download size: ${downloadSize} bytes`);
-    let receivedLength = 0;
-    reader.on("data", (chunk) => {
-      receivedLength += chunk.length;
-      const percent = (
-        (receivedLength / parseInt(downloadSize!)) *
-        100
-      ).toFixed(1);
-      onStatus(`${percent}% downloaded`);
-      writer.write(chunk);
-    });
-  }
+  const listrTask: ListrTask = {
+    title: "Downloading build",
+    task: async (ctx, task) => {
+      const downloadSize = buildRes.headers.get("Content-Length");
+      task.output = `Download size: ${downloadSize} bytes`;
+      let receivedLength = 0;
+      reader.on("data", (chunk) => {
+        receivedLength += chunk.length;
+        const percent = (
+          (receivedLength / parseInt(downloadSize!)) *
+          100
+        ).toFixed(1);
+        task.output = `${percent}% downloaded`;
+        writer.write(chunk);
+      });
 
-  await finished(reader);
-  writer.end();
+      await finished(reader);
+      writer.end();
+      task.output = "Download completed";
+    },
+  };
+
+  await new Listr([listrTask]).run({ output: onStatus });
 };
 
 // Download the build from a url to a temporary directory
@@ -57,6 +62,7 @@ export const downloadToTempDir = async (
 ): Promise<string> => {
   const tempDir = await getTempDir();
   const downloadPath = path.join(tempDir.path, "build.zip");
+  onStatus?.(`Downloading build to: ${downloadPath}`);
   await downloadBuild(url, downloadPath, onStatus);
   return downloadPath;
 };
